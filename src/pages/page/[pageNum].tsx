@@ -3,7 +3,7 @@ import { PostType } from "../../shared/types";
 import { PageProps } from "waku/router";
 import TruncatedPostLink from "../../shared/TruncatedPostLink";
 import { PostPagination } from "../../shared/PostPagination";
-import { Header } from "../../shared/Header";
+import { Header } from "../../shared/header";
 
 export default async function PostPage({
   pageNum = "1",

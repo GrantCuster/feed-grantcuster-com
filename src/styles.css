@@ -58,6 +58,10 @@ img + em {
   color: #d65d0e;
 }
 
+.bg-green {
+  background-color: #b8bb26;
+}
+
 .text-2xs {
   font-size: 0.55rem;
 }
@@ -66,6 +70,7 @@ img + em {
   color: #b16286;
   text-decoration: underline;
   pointer-events: auto;
+  word-break: break-all;
 }
 
 .post img {
@@ -76,3 +81,4 @@ img + em {
 .post img.preview {
   max-height: 100vh;
 }
+

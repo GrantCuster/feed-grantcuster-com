@@ -1,4 +1,4 @@
-import { dateFormatter } from "./dateFormatter";
+import { convertOrderedToDate, formatCustomDate } from "./dateFormatter";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { PostType } from "./types";
 
@@ -16,16 +16,13 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
       <div className="relative pointer-events-none">
         <div className="flex justify-between">
           <div className="blue">
-            {dateFormatter
-              .format(
-                new Date(
-                  new Date(post.created_at).getTime() - 1000 * 60 * 60 * 4,
-                ),
-              )
-              .toLocaleString()}
+            {post.created_at && formatCustomDate(new Date(post.created_at))}
           </div>
           <div>
-            <a className="gray hover:underline pointer-events-auto" href={`/editor/${post.slug}`}>
+            <a
+              className="gray hover:underline pointer-events-auto"
+              href={`/editor/${post.slug}`}
+            >
               edit
             </a>
           </div>
@@ -47,9 +44,9 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
         <div className="green mb-[1lh]">{post.title}</div>
         <MarkdownWithImagePreview
           post={post}
-          content={sections.slice(0, 4).join("\n")}
+          content={sections.slice(0, 5).join("\n")}
         />
-        {sections.length > 4 && <div className="gray">Read more</div>}
+        {sections.length > 5 && <div className="gray">Read more</div>}
       </div>
     </div>
   );

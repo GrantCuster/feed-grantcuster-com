@@ -3,7 +3,7 @@ import { sql } from "../../../shared/db";
 import { PostType } from "../../../shared/types";
 import { PostPagination } from "../../../shared/PostPagination";
 import TruncatedPostLink from "../../../shared/TruncatedPostLink";
-import { Header } from "../../../shared/Header";
+import { Header } from "../../../shared/header";
 
 async function TagPage({
   tag,

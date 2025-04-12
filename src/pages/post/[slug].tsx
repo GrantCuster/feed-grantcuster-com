@@ -1,7 +1,7 @@
 import type { PageProps } from "waku/router";
 import { sql } from "../../shared/db";
 import { PostType } from "../../shared/types";
-import { Header } from "../../shared/Header";
+import { Header } from "../../shared/header";
 import { MarkdownWithImagePreview } from "../../shared/MarkdownImageWithPreview";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
