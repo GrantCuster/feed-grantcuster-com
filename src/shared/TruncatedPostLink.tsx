@@ -1,4 +1,5 @@
-import { convertOrderedToDate, formatCustomDate } from "./dateFormatter";
+import { EditLink } from "./AdminComponents";
+import { dateToReadableString } from "./dateFormatter";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { PostType } from "./types";
 
@@ -16,15 +17,10 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
       <div className="relative pointer-events-none">
         <div className="flex justify-between">
           <div className="blue">
-            {post.created_at && formatCustomDate(new Date(post.created_at))}
+            {post.created_at && dateToReadableString(post.created_at)}
           </div>
           <div>
-            <a
-              className="gray hover:underline pointer-events-auto"
-              href={`/editor/${post.slug}`}
-            >
-              edit
-            </a>
+            <EditLink post={post} />
           </div>
         </div>
         <div className="orange">

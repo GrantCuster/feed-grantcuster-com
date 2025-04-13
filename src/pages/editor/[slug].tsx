@@ -2,6 +2,7 @@ import type { PageProps } from "waku/router";
 import { sql } from "../../shared/db";
 import { PostType } from "../../shared/types";
 import { PostEditor } from "../../shared/PostEditor";
+import { makeDBTimestamp } from "../../shared/dateFormatter";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
   const postData: PostType[] = await sql`
@@ -15,12 +16,16 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
 
   const post = postData[0]!;
 
-  async function updatePost(_post: PostType) {
+  async function updatePost(_post: PostType, adminPassword: string): Promise<void> {
     "use server";
+
+    if (adminPassword !== process.env.ADMIN_PASSWORD) return;
+
+    const dbTimestamp = makeDBTimestamp(_post.created_at);
 
     await sql`
       UPDATE posts
-      SET title = ${_post.title}, content = ${_post.content}, slug = ${_post.slug}
+      SET title = ${_post.title}, content = ${_post.content}, slug = ${_post.slug}, created_at = ${dbTimestamp}, updated_at = ${dbTimestamp}
       WHERE id = ${_post.id}`;
 
     const originalTags = await sql`
@@ -63,8 +68,6 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
       }
     }
   }
-
-
 
   return <PostEditor post={post} updatePost={updatePost} />;
 }

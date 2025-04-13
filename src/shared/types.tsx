@@ -3,6 +3,6 @@ export type PostType = {
   title: string | null;
   content: string;
   slug: string;
-  created_at: string;
+  created_at: Date;
   tags: string[];
 };

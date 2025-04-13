@@ -12,8 +12,6 @@ export default async function PostPage({
   const page = parseInt(pageNum);
   const offset = (page - 1) * limit;
 
-
-
   const posts: PostType[] = await sql`
     SELECT p.id, p.title, p.content, p.created_at, p.slug,
            COALESCE(json_agg(t.name) FILTER (WHERE t.id IS NOT NULL), '[]') AS tags
@@ -30,8 +28,8 @@ export default async function PostPage({
 
   const totalPostCount = postCountData[0]!.count;
 
-return (
-     <div className="flex flex-col max-w-[600px] mx-auto">
+  return (
+    <div className="flex flex-col max-w-[600px] mx-auto">
       <Header />
       {page > 1 && (
         <PostPagination

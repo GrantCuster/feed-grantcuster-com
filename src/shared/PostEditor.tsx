@@ -1,46 +1,38 @@
 "use client";
 
-import Markdown from "react-markdown";
 import {
-  convertOrderedToDate,
-  formatCustomDate,
-  orderedDateFormatter,
+  dateToReadableString,
+  slugTimestampToDate,
+  dateToSlugTimestamp,
 } from "./dateFormatter";
-import { MarkdownImageWithCaptionRenderer } from "./markdownComponents";
 import { PostType } from "./types";
-import remarkGfm from "remark-gfm";
 import { useState } from "react";
 import { makeSlug } from "./utils";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
+import { adminPasswordAtom } from "./atoms";
+import { useAtom } from "jotai";
 
 export function PostEditor({
   post,
   updatePost,
 }: {
   post: PostType;
-  updatePost: (post: PostType) => void;
+  updatePost: (post: PostType, adminPassword: string) => Promise<void>;
 }) {
-  const [originalPost, setOriginalPost] = useState(post);
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [originalPost] = useState(post);
+  const originalCreatedAt = dateToSlugTimestamp(post.created_at);
   const [createdAtEdit, setCreatedAtEdit] = useState(
-    orderedDateFormatter(new Date(post.created_at)),
+    dateToSlugTimestamp(post.created_at),
   );
   const [tag, setTag] = useState(post.tags[0]);
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.content);
   const [slug, setSlug] = useState(post.slug);
 
-  const editedDate: string =
-    convertOrderedToDate(createdAtEdit) !== null
-      ? formatCustomDate(convertOrderedToDate(createdAtEdit) as Date).includes(
-          "NaN",
-        )
-        ? "Invalid Date"
-        : formatCustomDate(convertOrderedToDate(createdAtEdit) as Date)
-      : "Invalid Date";
-
   return (
     <div className="flex flex-col overflow-hidden h-[100dvh] items-center">
-      <div className="flex max-w-[1200px] w-full h-full overflow-hidden">
+      <div className="flex max-w  -[1200px] w-full h-full overflow-hidden">
         <div className="flex flex-col bg-gruv-black gap-[4px] w-1/2 h-full p-[4px]">
           <div className="text-xs px-2 py-1 uppercase font-mono">Editor</div>
           <div className="relative bg-hard-black">
@@ -57,13 +49,11 @@ export function PostEditor({
               <button
                 className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-4 font-mono text-xs block"
                 onClick={() => {
-                  if (editedDate !== "Invalid Date") {
-                    let slug = createdAtEdit;
-                    if (title && title.length > 0) {
-                      slug += "-" + makeSlug(title);
-                    }
-                    setSlug(slug);
+                  let slug = createdAtEdit;
+                  if (title && title.length > 0) {
+                    slug += "-" + makeSlug(title);
                   }
+                  setSlug(slug);
                 }}
               >
                 gen
@@ -78,9 +68,6 @@ export function PostEditor({
               <span className="text-2xs pointer-events-none pt-1 block uppercase px-2 font-mono">
                 Created At
               </span>
-              <div className="blue hidden text-xs px-2 pointer-events-none">
-                {editedDate}
-              </div>
               <input
                 className="py-1 px-2 w-full blue font-mono bg-hard-black text-sm focus:outline-none"
                 type="text"
@@ -91,12 +78,12 @@ export function PostEditor({
             <button
               className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-4 font-mono text-xs block"
               onClick={() => {
-                setCreatedAtEdit(orderedDateFormatter(new Date()));
+                setCreatedAtEdit(dateToSlugTimestamp(new Date()));
               }}
             >
               now
             </button>
-            {editedDate === createdAtEdit ? null : (
+            {originalCreatedAt === createdAtEdit ? null : (
               <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
             )}
           </div>
@@ -146,17 +133,31 @@ export function PostEditor({
           <div className="flex justify-end">
             <button
               className="px-2 py-1 font-mono uppercase cursor-pointer text-xs green hover:bg-neutral-700"
-              onClick={() => {
+              onClick={async () => {
+                let slug = post.slug;
+                if (slug.length === 0) {
+                  slug = createdAtEdit;
+                  if (title && title.length > 0) {
+                    slug += "-" + makeSlug(title);
+                  }
+                }
+
                 const newPost = {
                   ...post,
                   title: title,
                   content: content,
-                  slug: slug,
-                  created_at: createdAtEdit,
+                  slug: slug.length > 0 ? slug : post.slug,
+                  // created at needs to be iso string
+                  created_at: slugTimestampToDate(createdAtEdit),
                   tags: [tag],
                 } as PostType;
-                updatePost(newPost);
-                setOriginalPost(newPost);
+
+                if (adminPassword) {
+                  await updatePost(newPost, adminPassword);
+                  window.location.href = `/post/${slug}`;
+                } else {
+                  alert("no password");
+                }
               }}
             >
               Save
@@ -173,7 +174,11 @@ export function PostEditor({
             id={post.slug}
           >
             <div className="relative pointer-events-none">
-              <div className="blue">{editedDate}</div>
+              <div className="blue">
+                {slugTimestampToDate(createdAtEdit)
+                  ? dateToReadableString(slugTimestampToDate(createdAtEdit)!)
+                  : "Invalid Date"}
+              </div>
               <div className="orange">
                 <span key={tag}>{tag}</span>
               </div>

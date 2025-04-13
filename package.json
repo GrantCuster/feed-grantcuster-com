@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "waku dev",
     "build": "waku build",
-    "start": "waku start"
+    "start": "waku start --port 8081"
   },
   "dependencies": {
     "@types/pg": "^8.11.11",
     "dotenv": "^16.4.7",
+    "jotai": "^2.12.2",
     "pg": "^8.14.1",
     "postgres": "^3.4.5",
     "react": "19.0.0",
