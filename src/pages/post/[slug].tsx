@@ -4,9 +4,8 @@ import { PostType } from "../../shared/types";
 import { Header } from "../../shared/header";
 import { MarkdownWithImagePreview } from "../../shared/MarkdownImageWithPreview";
 import { EditLink, PostDeleter } from "../../shared/AdminComponents";
-import {
-  dateToReadableString,
-} from "../../shared/dateFormatter";
+import { dateToReadableString } from "../../shared/dateFormatter";
+import Markdown from "react-markdown";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
   const postData: PostType[] = await sql`
@@ -34,47 +33,68 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
 
   const post = postData[0]!;
 
+  const title =
+    post.tags[0] +
+    " " +
+    (post.title || "on " + dateToReadableString(post.created_at)) +
+    " - Grant's Garden";
+  const description = post.content
+    .split("\n")
+    .slice(0, 3)
+    .map((line) => line.trim())
+    .join(" ");
+  const firstImage = post.content.match(/!\[.*?\]\((.*?)\)/);
+  const imageUrl = firstImage
+    ? firstImage[1]
+    : "https://garden.grantcuster.com/images/og-image.png";
+
   return (
-    <div className="flex flex-col max-w-[600px] mx-auto">
-      <Header />
-      <div
-        className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
-        key={post.id}
-        id={post.slug}
-      >
-        <div className="relative pointer-events-none">
-          <div className="w-full flex justify-between">
-            <div className="blue">
-              {post.created_at && dateToReadableString(post.created_at)}
+    <>
+      <>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={`https://garden.grantcuster.com/post/${slug}`} />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:image" content={imageUrl} />
+      </>
+      <div className="flex flex-col max-w-[600px] mx-auto">
+        <Header />
+        <div
+          className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
+          key={post.id}
+          id={post.slug}
+        >
+          <div className="relative pointer-events-none">
+            <div className="w-full flex justify-between">
+              <div className="blue">
+                {post.created_at && dateToReadableString(post.created_at)}
+              </div>
+              <div className="flex gap-3">
+                <PostDeleter deletePost={deletePost} post={post} />
+                <EditLink post={post} />
+              </div>
             </div>
-            <div className="flex gap-3">
-              <PostDeleter deletePost={deletePost} post={post} />
-              <EditLink post={post} />
-           </div>
+            <div className="orange">
+              {post.tags.map((tag) => (
+                <a
+                  href={`/tag/${tag}`}
+                  className="pointer-events-auto hover:underline"
+                  key={tag}
+                >
+                  {tag}
+                </a>
+              ))}
+            </div>
+            <div className="green mb-[1lh]">{post.title}</div>
+            <MarkdownWithImagePreview post={post} content={post.content} />
           </div>
-          <div className="orange">
-            {post.tags.map((tag) => (
-              <a
-                href={`/tag/${tag}`}
-                className="pointer-events-auto hover:underline"
-                key={tag}
-              >
-                {tag}
-              </a>
-            ))}
-          </div>
-          <div className="green mb-[1lh]">{post.title}</div>
-          <MarkdownWithImagePreview post={post} content={post.content} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
 export default Post;
-
-// export const getConfig = async () => {
-//   return {
-//     render: 'static',
-//   } as const;
-// };
