@@ -135,7 +135,7 @@ export function ShareToBluesky({
 
         const url = `https://garden.grantcuster.com/post/${post.slug}`;
 
-        await fetch("http://garden-extra.grantcuster.com/api/postToBluesky", {
+        await fetch("https://garden-extra.grantcuster.com/api/postToBluesky", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
