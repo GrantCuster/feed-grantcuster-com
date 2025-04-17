@@ -26,8 +26,6 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
 
   const post = postData[0]!;
 
-  console.log(post);
-
   const title =
     post.tags[0] +
     " " +
