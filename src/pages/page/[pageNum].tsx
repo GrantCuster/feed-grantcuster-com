@@ -34,25 +34,27 @@ export default async function PostPage({
       <meta name="description" content="Making and inspiration in progress" />
       <div className="flex flex-col max-w-[600px] mx-auto">
         <Header />
-        {page > 1 && (
+        {page !== 1 ? (
           <PostPagination
             baseLink="/page/"
             page={page}
             totalPostCount={totalPostCount}
             postsOnPage={posts.length}
           />
-        )}
+        ) : null}
         <div className="flex flex-col gap-[2px]">
           {posts.map((post) => (
             <TruncatedPostLink key={post.slug} post={post} />
           ))}
         </div>
-        <PostPagination
-          baseLink="/page/"
-          page={page}
-          totalPostCount={totalPostCount}
-          postsOnPage={posts.length}
-        />
+        <div className="py-2">
+          <PostPagination
+            baseLink="/page/"
+            page={page}
+            totalPostCount={totalPostCount}
+            postsOnPage={posts.length}
+          />
+        </div>
       </div>
     </>
   );

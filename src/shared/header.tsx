@@ -10,8 +10,14 @@ export const Header = () => {
         </Link>
       </div>
       <div className="flex gap-3">
-      <AddPostLink />
+        <AddPostLink />
         <LogoutLink />
+        <a
+          href="/random"
+          className="pointer-events-auto purple hover:underline"
+        >
+          Random
+        </a>
       </div>
     </div>
   );

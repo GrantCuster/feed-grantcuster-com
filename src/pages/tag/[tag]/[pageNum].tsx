@@ -52,12 +52,16 @@ async function TagPage({
           <TruncatedPostLink post={post} />
         ))}
       </div>
-      <PostPagination
-        baseLink={`/tag/${tag}/`}
-        page={page}
-        totalPostCount={totalPostCount}
-        postsOnPage={posts.length}
-      />
+      {totalPages > 1 && (
+        <div className="py-2">
+          <PostPagination
+            baseLink="/page/"
+            page={page}
+            totalPostCount={totalPostCount}
+            postsOnPage={posts.length}
+          />
+        </div>
+      )}
     </div>
   );
 }

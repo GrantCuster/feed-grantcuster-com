@@ -62,7 +62,7 @@ export function LogoutLink() {
   const [adminPassword] = useAtom(adminPasswordAtom);
   return adminPassword ? (
     <a className="pointer-events-auto hover:underline" href={`/logout`}>
-      logout'
+      logout
     </a>
   ) : null;
 }

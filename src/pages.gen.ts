@@ -30,6 +30,7 @@ type Page =
 | ({ path: '/page/[pageNum]' } & GetConfigResponse<typeof PagePageNum_getConfig>)
 | { path: '/post/[slug]'; render: 'dynamic' }
 | { path: '/postId/[id]'; render: 'dynamic' }
+| { path: '/random'; render: 'dynamic' }
 | ({ path: '/tag/[tag]/[pageNum]' } & GetConfigResponse<typeof TagTagPageNum_getConfig>)
 | ({ path: '/tag/[tag]' } & GetConfigResponse<typeof TagTagIndex_getConfig>);
 
