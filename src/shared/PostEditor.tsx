@@ -11,6 +11,9 @@ import { makeSlug } from "./utils";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { adminPasswordAtom } from "./atoms";
 import { useAtom } from "jotai";
+import { getGardenExtraBaseUrl } from "./consts";
+import { Header } from "./header";
+import { Link } from "waku";
 
 export function PostEditor({
   post,
@@ -32,9 +35,101 @@ export function PostEditor({
 
   return (
     <div className="flex flex-col overflow-hidden h-[100dvh] items-center">
-      <div className="flex max-w  -[1200px] w-full h-full overflow-hidden">
+      <div className="flex max-w-[1200px] w-full px-3">
+        <div className="yellow py-2">
+          <Link to="/" className="hover:underline">
+            Grant's Garden
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex max-w-[1200px] w-full h-full overflow-hidden">
         <div className="flex flex-col bg-gruv-black gap-[4px] w-1/2 h-full p-[4px]">
-          <div className="text-xs px-2 py-1 uppercase font-mono">Editor</div>
+          <div className="flex justify-between">
+            <div className="text-xs px-2 py-1 uppercase">Editor</div>
+            <div className="flex">
+              <label className="px-2 select-none hover:bg-neutral-700">
+                <input
+                  className="hidden"
+                  type="file"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      if (!file) return;
+
+                      const formData = new FormData();
+                      formData.append("file", file);
+
+                      try {
+                        const res = await fetch(
+                          `${getGardenExtraBaseUrl()}api/upload`,
+                          {
+                            headers: {
+                              Authorization: `Bearer ${adminPassword}`,
+                            },
+                            method: "POST",
+                            body: formData,
+                          },
+                        );
+
+                        const result = await res.json();
+
+                        if (result.message === "Images uploaded successfully") {
+                          const newContent =
+                            content + `\n\n![](${result.largeImageUrl})`;
+                          setContent(newContent);
+                        } else if (
+                          result.message ===
+                          "GIF and preview uploaded successfully"
+                        ) {
+                          const newContent =
+                            content + `\n\n![](${result.gifUrl})`;
+                          setContent(newContent);
+                        }
+
+                        console.log("Upload result:", result);
+                      } catch (err) {
+                        console.error("Upload failed", err);
+                      }
+                    }
+                  }}
+                />
+                ↑
+              </label>
+              <button
+                className="px-2 py-1 font-mono uppercase cursor-pointer text-xs green hover:bg-neutral-700"
+                onClick={async () => {
+                  let slug = post.slug;
+                  if (slug.length === 0) {
+                    slug = createdAtEdit;
+                    if (title && title.length > 0) {
+                      slug += "-" + makeSlug(title);
+                    }
+                  }
+
+                  const newPost = {
+                    ...post,
+                    title: title,
+                    content: content,
+                    slug: slug.length > 0 ? slug : post.slug,
+                    // created at needs to be iso string
+                    created_at: slugTimestampToDate(createdAtEdit),
+                    tags: [tag],
+                  } as PostType;
+
+                  if (adminPassword) {
+                    await updatePost(newPost, adminPassword);
+                    window.location.href = `/post/${slug}`;
+                  } else {
+                    alert("no password");
+                  }
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
           <div className="relative bg-hard-black">
             <label className="w-full">
               <span className="text-2xs pointer-events-none pt-1 block uppercase px-2 font-mono">
@@ -47,7 +142,7 @@ export function PostEditor({
                 onChange={(e) => setSlug(e.target.value)}
               />
               <button
-                className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-4 font-mono text-xs block"
+                className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-0 font-mono text-xs block"
                 onClick={() => {
                   let slug = createdAtEdit;
                   if (title && title.length > 0) {
@@ -76,7 +171,7 @@ export function PostEditor({
               />
             </label>
             <button
-              className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-4 font-mono text-xs block"
+              className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-0 font-mono text-xs block"
               onClick={() => {
                 setCreatedAtEdit(dateToSlugTimestamp(new Date()));
               }}
@@ -130,42 +225,9 @@ export function PostEditor({
               <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
             )}
           </div>
-          <div className="flex justify-end">
-            <button
-              className="px-2 py-1 font-mono uppercase cursor-pointer text-xs green hover:bg-neutral-700"
-              onClick={async () => {
-                let slug = post.slug;
-                if (slug.length === 0) {
-                  slug = createdAtEdit;
-                  if (title && title.length > 0) {
-                    slug += "-" + makeSlug(title);
-                  }
-                }
-
-                const newPost = {
-                  ...post,
-                  title: title,
-                  content: content,
-                  slug: slug.length > 0 ? slug : post.slug,
-                  // created at needs to be iso string
-                  created_at: slugTimestampToDate(createdAtEdit),
-                  tags: [tag],
-                } as PostType;
-
-                if (adminPassword) {
-                  await updatePost(newPost, adminPassword);
-                  window.location.href = `/post/${slug}`;
-                } else {
-                  alert("no password");
-                }
-              }}
-            >
-              Save
-            </button>
-          </div>
         </div>
         <div className="flex flex-col gap-[2px] w-1/2 h-full overflow-auto">
-          <div className="px-2 pt-[8px] pb-[3px] text-sm uppercase">
+          <div className="px-2 pt-[8px] pb-[3px] text-xs uppercase">
             Preview
           </div>
           <div

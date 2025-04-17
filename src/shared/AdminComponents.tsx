@@ -5,6 +5,7 @@ import { PostType } from "./types";
 import { adminPasswordAtom } from "./atoms";
 import { makeSocialShare } from "./utils";
 import { useState } from "react";
+import { getGardenExtraBaseUrl } from "./consts";
 
 export function PostDeleter({
   deletePost,
@@ -17,7 +18,7 @@ export function PostDeleter({
 
   return adminPassword ? (
     <button
-      className="text-red-500 pointer-events-auto hover:underline"
+      className="text-red-400 pointer-events-auto hover:underline"
       onClick={async () => {
         if (confirm("Are you sure you want to delete this post?")) {
           if (adminPassword) {
@@ -29,7 +30,7 @@ export function PostDeleter({
         }
       }}
     >
-      delete
+      x
     </button>
   ) : null;
 }
@@ -135,7 +136,8 @@ export function ShareToBluesky({
 
         const url = `https://garden.grantcuster.com/post/${post.slug}`;
 
-        await fetch("https://garden-extra.grantcuster.com/api/postToBluesky", {
+        const fetchUrl = `${getGardenExtraBaseUrl()}api/postToBluesky`;
+        await fetch(fetchUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -163,7 +165,7 @@ export function ShareToBluesky({
 }
 
 export function ShareToTwitter({ post }: { post: PostType }) {
-  const excerpt = makeSocialShare(post)
+  const excerpt = makeSocialShare(post);
   const splits = excerpt.split(" ");
   let truncated = "";
   for (const word of splits) {
