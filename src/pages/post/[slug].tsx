@@ -29,7 +29,9 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
   const title =
     post.tags[0] +
     " " +
-    (post.title || "on " + dateToReadableString(post.created_at)) +
+    (post.title
+      ? ": " + post.title
+      : "on " + dateToReadableString(post.created_at)) +
     " - Grant's Garden";
   const description = post.content
     .split("\n")

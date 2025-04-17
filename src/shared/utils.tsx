@@ -35,6 +35,12 @@ export function makePostExcerpt(post: PostType) {
     }
   }
 
+  // strip out blank lines
+  stripped = stripped
+    .split("\n")
+    .filter((line) => line.trim().length > 0)
+    .join("\n");
+
   return stripped;
 }
 
