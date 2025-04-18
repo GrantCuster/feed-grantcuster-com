@@ -91,7 +91,7 @@ export function ShareToMastodon({
         const status =
           makeSocialShare(post) +
           "\n" +
-          "htps://garden.grantcuster.com/post/" +
+          "https://garden.grantcuster.com/post/" +
           post.slug;
         await shareToMastodon(status, adminPassword);
         setPostStatus("shared");
