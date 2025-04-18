@@ -4,6 +4,8 @@
 import type { PathsForPages, GetConfigResponse } from 'waku/router';
 
 // prettier-ignore
+import type { getConfig as CatchAll_getConfig } from './pages/[...catchAll]';
+// prettier-ignore
 import type { getConfig as Creator_getConfig } from './pages/creator';
 // prettier-ignore
 import type { getConfig as EditorSlug_getConfig } from './pages/editor/[slug]';
@@ -22,6 +24,7 @@ import type { getConfig as TagTagIndex_getConfig } from './pages/tag/[tag]/index
 
 // prettier-ignore
 type Page =
+| ({ path: '/[...catchAll]' } & GetConfigResponse<typeof CatchAll_getConfig>)
 | ({ path: '/creator' } & GetConfigResponse<typeof Creator_getConfig>)
 | ({ path: '/editor/[slug]' } & GetConfigResponse<typeof EditorSlug_getConfig>)
 | ({ path: '/' } & GetConfigResponse<typeof Index_getConfig>)
