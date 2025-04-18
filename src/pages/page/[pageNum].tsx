@@ -30,7 +30,7 @@ export default async function PostPage({
 
   return (
     <>
-      <title>Grant's Garden</title>
+      <title>Feed</title>
       <meta name="description" content="Making and inspiration in progress" />
       <div className="flex flex-col max-w-[600px] mx-auto">
         <Header />

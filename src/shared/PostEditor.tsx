@@ -38,7 +38,7 @@ export function PostEditor({
       <div className="flex max-w-[1200px] w-full px-3">
         <div className="yellow py-2">
           <Link to="/" className="hover:underline">
-            Grant's Garden
+            Feed
           </Link>
         </div>
       </div>

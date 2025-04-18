@@ -31,7 +31,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
     (post.title
       ? ": " + post.title
       : "on " + dateToReadableString(post.created_at)) +
-    " - Grant's Garden";
+    " - Feed";
   const description = post.content
     .split("\n")
     .slice(0, 3)
@@ -40,7 +40,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
   const firstImage = post.content.match(/!\[.*?\]\((.*?)\)/);
   let imageUrl = firstImage
     ? firstImage[1]
-    : "https://garden.grantcuster.com/images/og-image.png";
+    : "https://feed.grantcuster.com/images/og-image.png";
 
   if (imageUrl && imageUrl.includes(".gif")) {
     imageUrl = imageUrl.replace(".gif", "-preview.jpg");
@@ -69,7 +69,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <meta property="og:description" content={description} />
         <meta
           property="og:url"
-          content={`https://garden.grantcuster.com/post/${slug}`}
+          content={`https://feed.grantcuster.com/post/${slug}`}
         />
         <meta property="og:image" content={imageUrl} />
         <meta property="twitter:card" content="summary_large_image" />

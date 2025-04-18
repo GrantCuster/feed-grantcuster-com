@@ -6,7 +6,7 @@ export const Header = () => {
     <div className={`max-w-[600px] px-[1lh] sm:px-0 w-full flex items-center justify-between`}>
       <div className="yellow py-4">
         <Link to="/" className="hover:underline">
-          Grant's Garden
+          Feed
         </Link>
       </div>
       <div className="flex gap-3">

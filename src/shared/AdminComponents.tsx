@@ -85,7 +85,7 @@ export function ShareToMastodon({ post }: { post: PostType }) {
         const status =
           makeSocialShare(post) +
           "\n" +
-          "https://garden.grantcuster.com/post/" +
+          "https://feed.grantcuster.com/post/" +
           post.slug;
         setPostStatus("shared");
         const fetchUrl = `${getGardenExtraBaseUrl()}api/postToMastodon`;
@@ -138,7 +138,7 @@ export function ShareToBluesky({
         setPostStatus("sharing");
         const status = makeSocialShare(post);
 
-        const url = `https://garden.grantcuster.com/post/${post.slug}`;
+        const url = `https://feed.grantcuster.com/post/${post.slug}`;
 
         const fetchUrl = `${getGardenExtraBaseUrl()}api/postToBluesky`;
         await fetch(fetchUrl, {
@@ -182,7 +182,7 @@ export function ShareToTwitter({ post }: { post: PostType }) {
   return (
     <a
       className="pointer-events-auto purple hover:underline"
-      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(truncated)}&url=https://garden.grantcuster.com/post/${post.slug}`}
+      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(truncated)}&url=https://feed.grantcuster.com/post/${post.slug}`}
       target="_blank"
     >
       Tweet
