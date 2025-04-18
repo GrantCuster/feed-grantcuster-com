@@ -12,7 +12,6 @@ import {
   ShareToTwitter,
 } from "../../shared/AdminComponents";
 import { dateToReadableString } from "../../shared/dateFormatter";
-import { createRestAPIClient } from "masto";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
   const postData: PostType[] = await sql`
