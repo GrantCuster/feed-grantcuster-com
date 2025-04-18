@@ -1,10 +1,8 @@
 import type { PageProps } from "waku/router";
 
-// Create dashboard page
-export default async function DashboardPage({
+export default async function CatchAllPage({
   catchAll,
 }: PageProps<"/app/[...catchAll]">) {
-  console.log(catchAll);
   // try rewriting to post
   if (catchAll.length === 1) {
     return (
@@ -16,11 +14,7 @@ export default async function DashboardPage({
     );
   }
 
-  return (
-    <>
-      <div>test</div>
-    </>
-  );
+  return <div>Not found</div>
 }
 
 export const getConfig = async () => {
