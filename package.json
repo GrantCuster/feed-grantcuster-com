@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "waku dev",
     "build": "waku build",
-    "start": "waku start --port 8081"
+    "start": "waku start --port 8082"
   },
   "dependencies": {
     "jotai": "^2.12.2",
