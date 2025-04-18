@@ -39,9 +39,13 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
     .map((line) => line.trim())
     .join(" ");
   const firstImage = post.content.match(/!\[.*?\]\((.*?)\)/);
-  const imageUrl = firstImage
+  let imageUrl = firstImage
     ? firstImage[1]
     : "https://garden.grantcuster.com/images/og-image.png";
+
+  if (imageUrl && imageUrl.includes(".gif")) {
+    imageUrl = imageUrl.replace(".gif", "-preview.jpg");
+  }
 
   async function deletePost(_post: PostType, adminPassword: string) {
     "use server";
