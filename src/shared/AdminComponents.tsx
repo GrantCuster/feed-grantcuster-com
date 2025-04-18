@@ -67,13 +67,7 @@ export function LogoutLink() {
   ) : null;
 }
 
-export function ShareToMastodon({
-  post,
-  shareToMastodon,
-}: {
-  post: PostType;
-  shareToMastodon: (status: string, adminPassword: string) => Promise<boolean>;
-}) {
+export function ShareToMastodon({ post }: { post: PostType }) {
   const [adminPassword] = useAtom(adminPasswordAtom);
   const [postStatus, setPostStatus] = useState<
     "unshared" | "sharing" | "shared"
@@ -93,8 +87,18 @@ export function ShareToMastodon({
           "\n" +
           "https://garden.grantcuster.com/post/" +
           post.slug;
-        await shareToMastodon(status, adminPassword);
         setPostStatus("shared");
+        const fetchUrl = `${getGardenExtraBaseUrl()}api/postToMastodon`;
+        await fetch(fetchUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminPassword}`,
+          },
+          body: JSON.stringify({
+            status,
+          }),
+        });
       }}
     >
       Share to Mastodon

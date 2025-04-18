@@ -61,25 +61,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
       WHERE post_id = ${_post.id}`;
   }
 
-  async function shareToMastodon(status: string, adminPassword: string) {
-    "use server";
-
-    if (adminPassword !== process.env.ADMIN_PASSWORD) return false;
-
-    const client = createRestAPIClient({
-      url: "https://mastodon.social",
-      accessToken: process.env.MASTODON_ACCESS_TOKEN!,
-    });
-
-    await client.v1.statuses.create({
-      status,
-      visibility: "public",
-    });
-
-    return true;
-  }
-
-  return (
+ return (
     <>
       <>
         <title>{title}</title>
@@ -128,7 +110,6 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
               <div className="flex flex-col items-start">
                 <ShareToMastodon
                   post={post}
-                  shareToMastodon={shareToMastodon}
                 />
                 <ShareToBluesky
                   post={post}
