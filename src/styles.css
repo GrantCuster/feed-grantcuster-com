@@ -4,7 +4,7 @@ html,
 body {
   background: theme("colors.neutral.900");
   color: #ebdbb2;
-  font-family: "JetBrains Mono NL", sans-serif;
+  font-family: sans-serif;
 }
 
 /* input, */

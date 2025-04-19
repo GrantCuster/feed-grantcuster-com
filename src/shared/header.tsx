@@ -1,7 +1,7 @@
 import { Link } from "waku";
 import { AddPostLink, LogoutLink } from "./AdminComponents";
 
-export const Header = () => {
+export const Header = ({  postCount }: { postCount?: number }) => {
   return (
     <div className={`max-w-[600px] px-[1lh] sm:px-0 w-full flex items-center justify-between`}>
       <div className="yellow py-4">
@@ -12,6 +12,11 @@ export const Header = () => {
       <div className="flex gap-3">
         <AddPostLink />
         <LogoutLink />
+        {postCount && (
+          <div className="pointer-events-none gray">
+            {postCount} posts
+          </div>
+        )}
         <a
           href="/random"
           className="pointer-events-auto purple hover:underline"

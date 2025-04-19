@@ -31,19 +31,21 @@ async function TagPage({
     LEFT JOIN tags t ON pt.tag_id = t.id
     WHERE t.name = ${tag}`;
 
-  const totalPostCount = postCountData[0]!.count;
-  const totalPages = Math.ceil(totalPostCount / limit);
+  const tagPostCount = postCountData[0]!.count;
+  const totalPages = Math.ceil(tagPostCount / limit);
 
   return (
     <div className={`mx-auto max-w-[600px]`} style={{}}>
       <Header />
-      <div className="orange">{tag}</div>
-      <div className="mb-4 gray">{totalPostCount} posts</div>
+      <div className="px-[1lh] sm:px-0 flex gap-3">
+        <div className="orange">{tag}</div>
+        <div className="mb-4 gray">{tagPostCount} posts</div>
+      </div>
       {totalPages > 1 && (
         <PostPagination
           baseLink={`/tag/${tag}/`}
           page={page}
-          totalPostCount={totalPostCount}
+          totalPostCount={tagPostCount}
           postsOnPage={posts.length}
         />
       )}
@@ -53,14 +55,12 @@ async function TagPage({
         ))}
       </div>
       {totalPages > 1 && (
-        <div className="py-2">
-          <PostPagination
-            baseLink="/page/"
-            page={page}
-            totalPostCount={totalPostCount}
-            postsOnPage={posts.length}
-          />
-        </div>
+        <PostPagination
+          baseLink="/page/"
+          page={page}
+          totalPostCount={tagPostCount}
+          postsOnPage={posts.length}
+        />
       )}
     </div>
   );

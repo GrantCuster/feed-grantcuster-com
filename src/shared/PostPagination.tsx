@@ -14,7 +14,7 @@ export function PostPagination({
 }) {
   const pageCount = Math.ceil(totalPostCount / postsPerPage);
   return (
-    <div className="flex items-center justify-between aqua">
+    <div className="flex text-sm bg-hard-black items-center px-[1lh] mb-[2px] w-full justify-between aqua">
       {page > 1 ? (
         <div className="w-1/2 flex justify-start">
           <a href={`${baseLink}${page - 1}`} className="py-2 hover:underline">

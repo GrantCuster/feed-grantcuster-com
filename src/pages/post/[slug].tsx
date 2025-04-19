@@ -23,6 +23,12 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
     WHERE p.slug = ${slug}
     GROUP BY p.id, p.title, p.content, p.created_at, p.slug`;
 
+  const postCountData = await sql`
+    SELECT COUNT(*) AS count
+    FROM posts`;
+
+  const totalPostCount = postCountData[0]!.count;
+
   const post = postData[0]!;
 
   const title =
@@ -76,7 +82,9 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <meta property="twitter:image" content={imageUrl} />
       </>
       <div className="flex flex-col max-w-[600px] mx-auto">
-        <Header />
+        <Header
+          postCount={totalPostCount}
+        />
         <div
           className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
           key={post.id}
@@ -106,7 +114,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
             <div className="green mb-[1lh]">{post.title}</div>
             <MarkdownWithImagePreview post={post} content={post.content} />
             <AdminWrapper>
-              <div className="flex flex-col items-start">
+              <div className="flex gap-3 flex-wrap">
                 <ShareToMastodon
                   post={post}
                 />
