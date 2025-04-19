@@ -99,11 +99,11 @@ export function PostEditor({
               <button
                 className="px-2 py-1 font-mono uppercase cursor-pointer text-xs green hover:bg-neutral-700"
                 onClick={async () => {
-                  let slug = post.slug;
+                  let _slug = slug;
                   if (slug.length === 0) {
-                    slug = createdAtEdit;
+                    _slug = createdAtEdit;
                     if (title && title.length > 0) {
-                      slug += "-" + makeSlug(title);
+                      _slug += "-" + makeSlug(title);
                     }
                   }
 
@@ -111,7 +111,7 @@ export function PostEditor({
                     ...post,
                     title: title,
                     content: content,
-                    slug: slug.length > 0 ? slug : post.slug,
+                    slug: _slug,
                     // created at needs to be iso string
                     created_at: slugTimestampToDate(createdAtEdit),
                     tags: [tag],
