@@ -7,6 +7,9 @@ import {
   AdminWrapper,
   EditLink,
   PostDeleter,
+  ShareGifToBluesky,
+  ShareImageOrGifToMastodon,
+  ShareImageToBluesky,
   ShareToBluesky,
   ShareToMastodon,
   ShareToTwitter,
@@ -44,12 +47,13 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
     .map((line) => line.trim())
     .join(" ");
   const firstImage = post.content.match(/!\[.*?\]\((.*?)\)/);
-  let imageUrl = firstImage
+  let imageUrlIncludesGIF = firstImage
     ? firstImage[1]
     : "https://feed.grantcuster.com/images/og-image.png";
 
-  if (imageUrl && imageUrl.includes(".gif")) {
-    imageUrl = imageUrl.replace(".gif", "-preview.jpg");
+  let imageUrl = imageUrlIncludesGIF;
+  if (imageUrlIncludesGIF && imageUrlIncludesGIF.includes(".gif")) {
+    imageUrl = imageUrlIncludesGIF.replace(".gif", "-preview.jpg");
   }
 
   async function deletePost(_post: PostType, adminPassword: string) {
@@ -66,7 +70,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
       WHERE post_id = ${_post.id}`;
   }
 
- return (
+  return (
     <>
       <>
         <title>{title}</title>
@@ -82,9 +86,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <meta property="twitter:image" content={imageUrl} />
       </>
       <div className="flex flex-col max-w-[600px] mx-auto">
-        <Header
-          postCount={totalPostCount}
-        />
+        <Header postCount={totalPostCount} />
         <div
           className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
           key={post.id}
@@ -114,16 +116,29 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
             <div className="green mb-[1lh]">{post.title}</div>
             <MarkdownWithImagePreview post={post} content={post.content} />
             <AdminWrapper>
-              <div className="flex gap-3 flex-wrap">
-                <ShareToMastodon
-                  post={post}
-                />
-                <ShareToBluesky
-                  post={post}
-                  title={title.trim()}
-                  description={description.trim()}
-                  imageUrl={imageUrl}
-                />
+              <div className="">
+                <div className="flex flex-wrap gap-3">
+                  <div className="gray">Mastodon</div>
+                  <ShareToMastodon post={post} />
+                  <ShareImageOrGifToMastodon
+                    post={post}
+                    imageUrl={imageUrlIncludesGIF!}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <div className="gray">Bluesky</div>
+                  <ShareToBluesky
+                    post={post}
+                    title={title.trim()}
+                    description={description.trim()}
+                    imageUrl={imageUrl}
+                  />
+                  <ShareImageToBluesky post={post} imageUrl={imageUrl!} />
+                  <ShareGifToBluesky
+                    post={post}
+                    imageUrl={imageUrlIncludesGIF!}
+                  />
+                </div>
                 <ShareToTwitter post={post} />
               </div>
             </AdminWrapper>

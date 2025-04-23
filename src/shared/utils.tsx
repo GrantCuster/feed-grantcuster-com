@@ -1,6 +1,16 @@
 import slugify from "slugify";
 import { PostType } from "./types";
 
+// async load image
+export async function loadImage(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
+    image.src = src;
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+  });
+}
+
 export function makeSlug(text: string) {
   return slugify(text, {
     lower: true, // Convert to lowercase
@@ -45,7 +55,7 @@ export function makePostExcerpt(post: PostType) {
 }
 
 export function makeSocialShare(post: PostType) {
-  let status = "🌱 "
+  let status = "🌱 ";
   if (post.tags.length > 0) {
     status += post.tags[0] + ": ";
   }

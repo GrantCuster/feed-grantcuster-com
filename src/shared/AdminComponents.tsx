@@ -3,8 +3,8 @@
 import { useAtom } from "jotai";
 import { PostType } from "./types";
 import { adminPasswordAtom } from "./atoms";
-import { makeSocialShare } from "./utils";
-import { useState } from "react";
+import { loadImage, makeSocialShare } from "./utils";
+import { useEffect, useState } from "react";
 import { getGardenExtraBaseUrl } from "./consts";
 
 export function PostDeleter({
@@ -87,7 +87,6 @@ export function ShareToMastodon({ post }: { post: PostType }) {
           "\n" +
           "https://feed.grantcuster.com/post/" +
           post.slug;
-        setPostStatus("shared");
         const fetchUrl = `${getGardenExtraBaseUrl()}api/postToMastodon`;
         await fetch(fetchUrl, {
           method: "POST",
@@ -99,9 +98,173 @@ export function ShareToMastodon({ post }: { post: PostType }) {
             status,
           }),
         });
+        setPostStatus("shared");
       }}
     >
-      Share to Mastodon
+      Link
+    </button>
+  ) : postStatus === "sharing" ? (
+    <span>Sharing...</span>
+  ) : (
+    <span>Shared!</span>
+  );
+}
+
+export function ShareImageOrGifToMastodon({
+  post,
+  imageUrl,
+}: {
+  post: PostType;
+  imageUrl: string;
+}) {
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [postStatus, setPostStatus] = useState<
+    "unshared" | "sharing" | "shared"
+  >("unshared");
+
+  return postStatus === "unshared" ? (
+    <button
+      className="pointer-events-auto purple hover:underline"
+      onClick={async () => {
+        if (!adminPassword) {
+          alert("No password");
+          return;
+        }
+        setPostStatus("sharing");
+        const status =
+          makeSocialShare(post) +
+          "\n" +
+          "https://feed.grantcuster.com/post/" +
+          post.slug;
+        const fetchUrl = `${getGardenExtraBaseUrl()}api/postImageOrGIfToMastodon`;
+        await fetch(fetchUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminPassword}`,
+          },
+          body: JSON.stringify({
+            status,
+            imageUrl,
+          }),
+        });
+        setPostStatus("shared");
+      }}
+    >
+      Image/GIF
+    </button>
+  ) : postStatus === "sharing" ? (
+    <span>Sharing...</span>
+  ) : (
+    <span>Shared!</span>
+  );
+}
+
+export function ShareImageToBluesky({
+  post,
+  imageUrl,
+}: {
+  post: PostType;
+  imageUrl: string;
+}) {
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [postStatus, setPostStatus] = useState<
+    "unshared" | "sharing" | "shared"
+  >("unshared");
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  const [height, setHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    async function main() {
+      const loadedImage = await loadImage(imageUrl);
+      setWidth(loadedImage.width);
+      setHeight(loadedImage.height);
+    }
+    main();
+  }, [imageUrl]);
+
+  return postStatus === "unshared" ? (
+    <button
+      className="pointer-events-auto purple hover:underline"
+      onClick={async () => {
+        if (!adminPassword) {
+          alert("No password");
+          return;
+        }
+        setPostStatus("sharing");
+        const status =
+          makeSocialShare(post) +
+          "\n" +
+          "https://feed.grantcuster.com/post/" +
+          post.slug;
+        const fetchUrl = `${getGardenExtraBaseUrl()}api/postImageToBluesky`;
+        await fetch(fetchUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminPassword}`,
+          },
+          body: JSON.stringify({
+            status,
+            imageUrl,
+            width,
+            height,
+          }),
+        });
+        setPostStatus("shared");
+      }}
+    >
+      Image
+    </button>
+  ) : postStatus === "sharing" ? (
+    <span>Sharing...</span>
+  ) : (
+    <span>Shared!</span>
+  );
+}
+
+export function ShareGifToBluesky({
+  post,
+  imageUrl,
+}: {
+  post: PostType;
+  imageUrl: string;
+}) {
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [postStatus, setPostStatus] = useState<
+    "unshared" | "sharing" | "shared"
+  >("unshared");
+
+  return postStatus === "unshared" ? (
+    <button
+      className="pointer-events-auto purple hover:underline"
+      onClick={async () => {
+        if (!adminPassword) {
+          alert("No password");
+          return;
+        }
+        setPostStatus("sharing");
+        const status =
+          makeSocialShare(post) +
+          "\n" +
+          "https://feed.grantcuster.com/post/" +
+          post.slug;
+        const fetchUrl = `${getGardenExtraBaseUrl()}api/postGifToBluesky`;
+        await fetch(fetchUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminPassword}`,
+          },
+          body: JSON.stringify({
+            status,
+            imageUrl,
+          }),
+        });
+        setPostStatus("shared");
+      }}
+    >
+      GIF
     </button>
   ) : postStatus === "sharing" ? (
     <span>Sharing...</span>
@@ -155,11 +318,10 @@ export function ShareToBluesky({
             image: imageUrl,
           }),
         });
-
         setPostStatus("shared");
       }}
     >
-      Share to Bluesky
+      Link
     </button>
   ) : postStatus === "sharing" ? (
     <span>Sharing...</span>
