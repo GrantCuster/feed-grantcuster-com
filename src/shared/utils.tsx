@@ -61,6 +61,13 @@ export function makeSocialShare(post: PostType) {
   }
   status += post.title + "\n";
   status += makePostExcerpt(post) + "\n";
+
+  // remove any blank lines
+  status = status
+    .split("\n")
+    .filter((line) => line.trim().length > 0)
+    .join("\n");
+
   let truncated = status.slice(0, 300);
   return truncated;
 }
