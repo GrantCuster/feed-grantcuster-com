@@ -30,6 +30,7 @@ type Page =
 | ({ path: '/' } & GetConfigResponse<typeof Index_getConfig>)
 | ({ path: '/login' } & GetConfigResponse<typeof Login_getConfig>)
 | ({ path: '/logout' } & GetConfigResponse<typeof Logout_getConfig>)
+| { path: '/media'; render: 'dynamic' }
 | ({ path: '/page/[pageNum]' } & GetConfigResponse<typeof PagePageNum_getConfig>)
 | { path: '/post/[slug]'; render: 'dynamic' }
 | { path: '/postId/[id]'; render: 'dynamic' }

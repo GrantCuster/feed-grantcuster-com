@@ -12,7 +12,6 @@ import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { adminPasswordAtom } from "./atoms";
 import { useAtom } from "jotai";
 import { getGardenExtraBaseUrl } from "./consts";
-import { Header } from "./header";
 import { Link } from "waku";
 
 export function PostEditor({
