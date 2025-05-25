@@ -1,6 +1,6 @@
 import { sql } from "../shared/db";
 import { MediaList } from "../shared/MediaList";
-import { PostType, UploadType } from "../shared/types";
+import { UploadType } from "../shared/types";
 
 async function Media() {
   const uploads: UploadType[] = await sql`
@@ -8,6 +8,8 @@ async function Media() {
     FROM uploads
     ORDER BY created_at DESC
   `;
+
+  // should update to server function to check if logged in
 
   return <MediaList uploads={uploads} />;
 }

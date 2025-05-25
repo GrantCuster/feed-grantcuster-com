@@ -13,6 +13,14 @@ export function MediaList({ uploads }: { uploads: UploadType[] }) {
   const [index, setIndex] = useState(0);
   const perPage = 12;
 
+  if (!adminPassword) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="text-center">Please log in to view media</div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <div className="flex flex-col mx-auto max-w-[512px] gap-8 mt-8">
