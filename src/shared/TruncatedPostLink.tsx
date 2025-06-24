@@ -16,14 +16,14 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
       </a>
       <div className="relative pointer-events-none">
         <div className="flex justify-between">
-          <div className="blue">
+          <div className="blue departure-mono">
             {post.created_at && dateToReadableString(post.created_at)}
           </div>
           <div>
             <EditLink post={post} />
           </div>
         </div>
-        <div className="orange">
+        <div className="orange departure-mono">
           {post.tags.map((tag) => (
             <a
               href={`/tag/${tag}`}
@@ -42,7 +42,7 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
           post={post}
           content={sections.slice(0, 5).join("\n")}
         />
-        {sections.length > 5 && <div className="gray">Read more</div>}
+        {sections.length > 5 && <div className="gray departure-mono">Read more</div>}
       </div>
     </div>
   );

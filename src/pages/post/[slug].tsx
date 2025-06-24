@@ -94,7 +94,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         >
           <div className="relative pointer-events-none">
             <div className="w-full flex justify-between">
-              <div className="blue">
+              <div className="blue departure-mono">
                 {post.created_at && dateToReadableString(post.created_at)}
               </div>
               <div className="flex gap-3">
@@ -102,7 +102,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
                 <EditLink post={post} />
               </div>
             </div>
-            <div className="orange">
+            <div className="orange departure-mono">
               {post.tags.map((tag) => (
                 <a
                   href={`/tag/${tag}`}

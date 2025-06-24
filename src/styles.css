@@ -4,9 +4,23 @@
   color-scheme: dark;
 }
 
+@font-face {
+  font-family: "DepartureMono";
+  src:
+    url("/fonts/DepartureMono-Regular.woff2") format("woff2"),
+    url("/fonts/DepartureMono-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.departure-mono {
+  font-family: "DepartureMono", monospace;
+  font-size: 14px;
+}
+
 html,
 body {
-  background: theme("colors.neutral.900");
+  background: black;
   color: #ebdbb2;
   font-family: sans-serif;
 }
