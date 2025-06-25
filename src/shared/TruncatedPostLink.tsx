@@ -7,7 +7,7 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
   const sections = post.content.split("\n");
   return (
     <div
-      className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
+      className="bg-hard-black relative text-left post px-[1lh] pt-[0.75lh] pb-[1lh]"
       key={post.id}
       id={post.slug}
     >
@@ -42,7 +42,7 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
           post={post}
           content={sections.slice(0, 5).join("\n")}
         />
-        {sections.length > 5 && <div className="gray departure-mono">Read more</div>}
+        {sections.length > 5 && <div className="gray departure-mono mt-[1lh]">Read more</div>}
       </div>
     </div>
   );

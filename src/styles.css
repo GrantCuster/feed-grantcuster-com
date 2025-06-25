@@ -36,6 +36,10 @@ p {
   margin-bottom: 1lh;
 }
 
+p:last-child {
+  margin-bottom: 0;
+}
+
 img + em {
   font-style: normal;
   margin-top: 0.5lh;

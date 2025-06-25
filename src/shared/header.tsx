@@ -23,6 +23,12 @@ export const Header = ({  postCount }: { postCount?: number }) => {
         >
           Random
         </a>
+        <a
+          href="https://grantcuster.com"
+          className="pointer-events-auto aqua hover:underline"
+        >
+          About
+        </a>
       </div>
     </div>
   );
