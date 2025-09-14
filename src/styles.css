@@ -40,13 +40,16 @@ p:last-child {
   margin-bottom: 0;
 }
 
-img + em {
+img + em, video + em {
   font-style: normal;
   margin-top: 0.5lh;
   margin-bottom: 1lh;
   font-size: 0.8rem;
   color: #d79921;
   display: block;
+}
+video {
+  pointer-events: auto;
 }
 
 .bg-hard-black {

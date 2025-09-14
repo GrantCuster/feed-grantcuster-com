@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { MarkdownImageWithCaptionRenderer } from "./markdownComponents";
 import Markdown from "react-markdown";
 import { PostType } from "./types";
@@ -38,6 +39,7 @@ export const MarkdownWithImagePreview = ({
     <div className="post-body">
       <Markdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           img: MarkdownImageWithCaptionRenderer,
         }}

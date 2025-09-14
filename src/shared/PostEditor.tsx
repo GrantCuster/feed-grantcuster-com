@@ -6,7 +6,7 @@ import {
   dateToSlugTimestamp,
 } from "./dateFormatter";
 import { PostType } from "./types";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { makeSlug } from "./utils";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { adminPasswordAtom } from "./atoms";
@@ -32,6 +32,11 @@ export function PostEditor({
   const [content, setContent] = useState(post.content);
   const [slug, setSlug] = useState(post.slug);
 
+  const contentRef = useRef(content);
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+
   return (
     <div className="flex flex-col overflow-hidden h-[100dvh] items-center">
       <div className="flex max-w-[1200px] w-full px-3">
@@ -52,6 +57,7 @@ export function PostEditor({
                   className="hidden"
                   type="file"
                   onChange={async (e) => {
+                    console.log("Uploading file...");
                     const file = e.target.files?.[0];
                     if (file) {
                       if (!file) return;
@@ -72,6 +78,7 @@ export function PostEditor({
                         );
 
                         const result = await res.json();
+                        const content = contentRef.current;
 
                         if (result.message === "Images uploaded successfully") {
                           const newContent =
@@ -84,8 +91,14 @@ export function PostEditor({
                           const newContent =
                             content + `\n\n![](${result.gifUrl})`;
                           setContent(newContent);
+                        } else if (
+                          result.message === "Video uploaded successfully"
+                        ) {
+                          const newContent =
+                            content +
+                            `\n\n<p><video controls muted autoplay loop src="${result.videoUrl}"></video><em></em></p>`;
+                          setContent(newContent);
                         }
-
                         console.log("Upload result:", result);
                       } catch (err) {
                         console.error("Upload failed", err);
