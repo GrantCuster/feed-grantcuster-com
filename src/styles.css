@@ -98,6 +98,16 @@ video {
   word-break: break-all;
 }
 
+.post h2 {
+  color: #fe8019;
+  margin-bottom: 0.5lh;
+}
+
+.post pre {
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
+
 .post img {
   pointer-events: auto;
   cursor: zoom-in;
