@@ -32,7 +32,7 @@ export default async function PostPage({
     <>
       <title>Feed - Grant Custer</title>
       <meta name="description" content="Making and inspiration in progress" />
-      <div className="flex flex-col max-w-[600px] mx-auto">
+      <div className="container">
         <Header postCount={totalPostCount} />
         {page !== 1 ? (
           <PostPagination
@@ -42,7 +42,7 @@ export default async function PostPage({
             postsOnPage={posts.length}
           />
         ) : null}
-        <div className="flex flex-col gap-[1lh] mb-[2px]">
+        <div className="feed">
           {posts.map((post) => (
             <TruncatedPostLink key={post.slug} post={post} />
           ))}

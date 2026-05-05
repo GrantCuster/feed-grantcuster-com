@@ -10,10 +10,9 @@ export function PageSelector({
   baseLink: string;
 }) {
   return (
-    <div className="flex gap-2 items-center">
+    <span>
       Page
       <select
-        className="rounded bg-neutral-900 focus:outline-none px-2 py-0.5"
         value={page}
         onChange={(e) => {
           window.location.href = `${baseLink}${parseInt(e.target.value)}`;
@@ -25,7 +24,7 @@ export function PageSelector({
           </option>
         ))}
       </select>
-      <div className="shrink-0">of {pageCount}</div>
-    </div>
+      of {pageCount}
+    </span>
   );
 }

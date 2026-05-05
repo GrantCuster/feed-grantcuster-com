@@ -38,78 +38,53 @@ export function PostEditor({
   }, [content]);
 
   return (
-    <div className="flex flex-col overflow-hidden h-[100dvh] items-center">
-      <div className="flex max-w-[1200px] w-full px-3">
-        <div className="yellow py-2">
-          <Link to="/" className="hover:underline">
-            Feed
-          </Link>
-        </div>
+    <div className="editor-layout">
+      <div className="editor-topbar">
+        <Link to="/">Feed</Link>
       </div>
 
-      <div className="flex max-w-[1200px] w-full h-full overflow-hidden">
-        <div className="flex flex-col bg-gruv-black gap-[4px] w-1/2 h-full p-[4px]">
-          <div className="flex justify-between">
-            <div className="text-xs px-2 py-1 uppercase">Editor</div>
-            <div className="flex">
-              <label className="px-2 select-none hover:bg-neutral-700">
+      <div className="editor-panes">
+        <div className="editor-panel">
+          <div className="editor-panel-header">
+            <span>Editor</span>
+            <div className="editor-actions">
+              <label className="editor-upload-btn">
                 <input
-                  className="hidden"
                   type="file"
+                  style={{ display: "none" }}
                   onChange={async (e) => {
-                    console.log("Uploading file...");
                     const file = e.target.files?.[0];
                     if (file) {
-                      if (!file) return;
-
                       const formData = new FormData();
                       formData.append("file", file);
-
                       try {
                         const res = await fetch(
                           `${getGardenExtraBaseUrl()}api/upload`,
                           {
-                            headers: {
-                              Authorization: `Bearer ${adminPassword}`,
-                            },
+                            headers: { Authorization: `Bearer ${adminPassword}` },
                             method: "POST",
                             body: formData,
                           },
                         );
-
                         const result = await res.json();
-                        const content = contentRef.current;
-
+                        const current = contentRef.current;
                         if (result.message === "Images uploaded successfully") {
-                          const newContent =
-                            content + `\n\n![](${result.largeImageUrl})`;
-                          setContent(newContent);
-                        } else if (
-                          result.message ===
-                          "GIF and preview uploaded successfully"
-                        ) {
-                          const newContent =
-                            content + `\n\n![](${result.gifUrl})`;
-                          setContent(newContent);
-                        } else if (
-                          result.message === "Video uploaded successfully"
-                        ) {
-                          const newContent =
-                            content +
-                            `\n\n<p><video controls muted autoplay loop src="${result.videoUrl}"></video><em></em></p>`;
-                          setContent(newContent);
+                          setContent(current + `\n\n![](${result.largeImageUrl})`);
+                        } else if (result.message === "GIF and preview uploaded successfully") {
+                          setContent(current + `\n\n![](${result.gifUrl})`);
+                        } else if (result.message === "Video uploaded successfully") {
+                          setContent(current + `\n\n<p><video controls muted autoplay loop src="${result.videoUrl}"></video><em></em></p>`);
                         }
-                        console.log("Upload result:", result);
                       } catch (err) {
                         console.error("Upload failed", err);
                       }
                     }
                   }}
                 />
-                ↑
+                Upload
               </label>
               <button
-                className="px-2 py-1 font-mono uppercase cursor-pointer text-xs green hover:bg-neutral-700"
+                className="editor-save-btn"
                 onClick={async () => {
                   let _slug = slug;
                   if (slug.length === 0) {
@@ -118,17 +93,14 @@ export function PostEditor({
                       _slug += "-" + makeSlug(title);
                     }
                   }
-
                   const newPost = {
                     ...post,
-                    title: title,
-                    content: content,
+                    title,
+                    content,
                     slug: _slug,
-                    // created at needs to be iso string
                     created_at: slugTimestampToDate(createdAtEdit),
                     tags: [tag],
                   } as PostType;
-
                   if (adminPassword) {
                     await updatePost(newPost, adminPassword);
                     window.location.href = `/post/${slug}`;
@@ -142,123 +114,94 @@ export function PostEditor({
             </div>
           </div>
 
-          <div className="relative bg-hard-black">
-            <label className="w-full">
-              <span className="text-2xs pointer-events-none pt-1 block uppercase px-2 font-mono">
-                Slug
-              </span>
+          <div className="editor-field">
+            <label className="editor-label">Slug</label>
+            <div className="editor-input-row">
               <input
-                className="py-1 px-2 font-mono w-full bg-hard-black text-sm green focus:outline-none"
+                className="editor-input"
                 type="text"
                 value={slug || ""}
                 onChange={(e) => setSlug(e.target.value)}
               />
               <button
-                className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-0 font-mono text-xs block"
+                className="editor-inline-btn"
                 onClick={() => {
-                  let slug = createdAtEdit;
-                  if (title && title.length > 0) {
-                    slug += "-" + makeSlug(title);
-                  }
-                  setSlug(slug);
+                  let s = createdAtEdit;
+                  if (title && title.length > 0) s += "-" + makeSlug(title);
+                  setSlug(s);
                 }}
               >
                 gen
               </button>
-            </label>
-            {originalPost.slug === slug ? null : (
-              <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
-            )}
+            </div>
+            {originalPost.slug !== slug && <div className="editor-changed" />}
           </div>
-          <div className="relative">
-            <label className="bg-hard-black block relative">
-              <span className="text-2xs pointer-events-none pt-1 block uppercase px-2 font-mono">
-                Created At
-              </span>
+
+          <div className="editor-field">
+            <label className="editor-label">Created At</label>
+            <div className="editor-input-row">
               <input
-                className="py-1 px-2 w-full blue font-mono bg-hard-black text-sm focus:outline-none"
+                className="editor-input"
                 type="text"
                 value={createdAtEdit}
                 onChange={(e) => setCreatedAtEdit(e.target.value)}
               />
-            </label>
-            <button
-              className="absolute hover:bg-neutral-700 cursor-pointer pointer-events-auto top-0 px-2 py-1 right-0 font-mono text-xs block"
-              onClick={() => {
-                setCreatedAtEdit(dateToSlugTimestamp(new Date()));
-              }}
-            >
-              now
-            </button>
-            {originalCreatedAt === createdAtEdit ? null : (
-              <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
-            )}
+              <button
+                className="editor-inline-btn"
+                onClick={() => setCreatedAtEdit(dateToSlugTimestamp(new Date()))}
+              >
+                now
+              </button>
+            </div>
+            {originalCreatedAt !== createdAtEdit && <div className="editor-changed" />}
           </div>
-          <div className="relative">
-            <label className="bg-hard-black">
-              <span className="text-2xs bg-hard-black pointer-events-none pt-1 block uppercase px-2 font-mono">
-                Tag
-              </span>
-              <input
-                className="py-1 px-2 font-mono w-full bg-hard-black text-sm orange focus:outline-none"
-                type="text"
-                value={tag}
-                onChange={(e) => setTag(e.target.value)}
-              />
-              {originalPost.tags[0] === tag ? null : (
-                <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
-              )}
-            </label>
+
+          <div className="editor-field">
+            <label className="editor-label">Tag</label>
+            <input
+              className="editor-input"
+              type="text"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+            />
+            {originalPost.tags[0] !== tag && <div className="editor-changed" />}
           </div>
-          <div className="relative">
-            <label className="bg-hard-black">
-              <span className="text-2xs bg-hard-black pointer-events-none pt-1 block uppercase px-2 font-mono">
-                Title
-              </span>
-              <input
-                className="py-1 px-2 font-mono block bg-hard-black w-full text-sm green focus:outline-none"
-                type="text"
-                value={title || ""}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              {originalPost.title === title ? null : (
-                <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
-              )}
-            </label>
+
+          <div className="editor-field">
+            <label className="editor-label">Title</label>
+            <input
+              className="editor-input"
+              type="text"
+              value={title || ""}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            {originalPost.title !== title && <div className="editor-changed" />}
           </div>
-          <div className="relative grow">
+
+          <div className="editor-field editor-field--grow">
+            <label className="editor-label">Content</label>
             <textarea
-              className="py-1 px-2 absolute inset-0 font-mono bg-hard-black text-sm resize-none focus:outline-none"
-              rows={10}
+              className="editor-textarea"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-            {originalPost.content === content ? null : (
-              <div className="absolute -left-[2px] top-0 w-[1px] h-full bg-green"></div>
-            )}
+            {originalPost.content !== content && <div className="editor-changed" />}
           </div>
         </div>
-        <div className="flex flex-col gap-[2px] w-1/2 h-full overflow-auto">
-          <div className="px-2 pt-[8px] pb-[3px] text-xs uppercase">
-            Preview
+
+        <div className="editor-preview-panel">
+          <div className="editor-panel-header">
+            <span>Preview</span>
           </div>
-          <div
-            className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
-            key={post.id}
-            id={post.slug}
-          >
-            <div className="relative pointer-events-none">
-              <div className="blue">
-                {slugTimestampToDate(createdAtEdit)
-                  ? dateToReadableString(slugTimestampToDate(createdAtEdit)!)
-                  : "Invalid Date"}
-              </div>
-              <div className="orange">
-                <span key={tag}>{tag}</span>
-              </div>
-              <div className="green mb-[1lh]">{title}</div>
-              <MarkdownWithImagePreview post={post} content={content} />
+          <div className="post-card markdown-body post" id={post.slug}>
+            <div>
+              {slugTimestampToDate(createdAtEdit) ? dateToReadableString(slugTimestampToDate(createdAtEdit)!) : "Invalid Date"}
             </div>
+            <div>
+              <a href={`/tag/${tag}`}>{tag}</a>
+            </div>
+            {title ? <h2>{title}</h2> : <br />}
+            <MarkdownWithImagePreview post={post} content={content} />
           </div>
         </div>
       </div>

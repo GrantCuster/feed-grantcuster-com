@@ -1,8 +1,5 @@
 @import "tailwindcss";
-
-:root {
-  color-scheme: dark;
-}
+@import "./github-markdown.css";
 
 @font-face {
   font-family: "DepartureMono";
@@ -20,38 +17,258 @@
 
 html,
 body {
-  background: black;
-  color: #ebdbb2;
-  font-family: sans-serif;
+  background: #f6f8fa;
+  margin: 0;
 }
 
-/* input, */
-/* textarea, */
-/* select { */
-/*   background: theme("colors.neutral.900"); */
-/*   color: #ebdbb2; */
-/* } */
-
-p {
-  margin-bottom: 1lh;
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: #010409;
+  }
 }
 
-p:last-child {
-  margin-bottom: 0;
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-img + em, video + em {
+.feed-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.feed-header a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.post-card {
+  padding: 1rem;
+  border: 1px solid var(--borderColor-default);
+}
+
+img + em,
+video + em {
   font-style: normal;
-  margin-top: 0.5lh;
-  margin-bottom: 1lh;
   font-size: 0.8rem;
-  color: #d79921;
+  color: var(--fgColor-muted);
   display: block;
+  margin-top: 0.4rem;
 }
+
 video {
+  pointer-events: auto;
+  max-width: 100%;
+}
+
+.tag-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pagination a:hover {
+  text-decoration: underline;
+}
+
+.post-share {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post-share-row {
+  display: flex;
+  gap: 1ch;
+}
+
+@media (max-width: 600px) {
+  .feed {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .post-card {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+}
+
+.post-body a {
   pointer-events: auto;
 }
 
+.post img {
+  pointer-events: auto;
+  cursor: zoom-in;
+  max-height: 50vh;
+  max-width: 100%;
+}
+
+.post img.preview {
+  max-height: 100vh;
+}
+
+/* ---- Editor ---- */
+
+.editor-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.editor-topbar {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--borderColor-default);
+  flex-shrink: 0;
+}
+
+.editor-topbar a:hover {
+  text-decoration: underline;
+}
+
+.editor-panes {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  gap: 2px;
+  padding: 0.5rem;
+  overflow: hidden;
+  border-right: 1px solid var(--borderColor-default);
+}
+
+.editor-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.75rem;
+  color: var(--fgColor-muted);
+  text-transform: uppercase;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.editor-upload-btn,
+.editor-save-btn,
+.editor-inline-btn {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.editor-upload-btn:hover,
+.editor-save-btn:hover,
+.editor-inline-btn:hover {
+  background: var(--bgColor-neutral-muted);
+}
+
+.editor-field {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 2px;
+}
+
+.editor-field--grow {
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: var(--fgColor-muted);
+  padding: 0 0.25rem;
+}
+
+.editor-input-row {
+  display: flex;
+  gap: 4px;
+}
+
+.editor-input {
+  flex: 1;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  border: 1px solid var(--borderColor-default);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.editor-textarea {
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  border: 1px solid var(--borderColor-default);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+}
+
+.editor-changed {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--fgColor-accent);
+}
+
+.editor-preview-panel {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+/* ---- Gruvbox classes retained for editor/admin pages ---- */
 .bg-hard-black {
   background-color: #1d2021;
 }
@@ -82,38 +299,9 @@ video {
 .orange {
   color: #d65d0e;
 }
-
 .bg-green {
   background-color: #b8bb26;
 }
-
 .text-2xs {
   font-size: 0.55rem;
 }
-
-.post .post-body a {
-  color: #b16286;
-  text-decoration: underline;
-  pointer-events: auto;
-  word-break: break-all;
-}
-
-.post h2 {
-  color: #fe8019;
-  margin-bottom: 0.5lh;
-}
-
-.post pre {
-  font-size: 0.85rem;
-  white-space: pre-wrap;
-}
-
-.post img {
-  pointer-events: auto;
-  cursor: zoom-in;
-  max-height: 50vh;
-}
-.post img.preview {
-  max-height: 100vh;
-}
-

@@ -18,7 +18,8 @@ export function PostDeleter({
 
   return adminPassword ? (
     <button
-      className="text-red-400 pointer-events-auto hover:underline"
+      className="pointer-events-auto hover:underline"
+      style={{ marginLeft: "1ch", color: "var(--fgColor-danger)" }}
       onClick={async () => {
         if (confirm("Are you sure you want to delete this post?")) {
           if (adminPassword) {
@@ -30,7 +31,7 @@ export function PostDeleter({
         }
       }}
     >
-      x
+      Delete
     </button>
   ) : null;
 }
@@ -42,8 +43,9 @@ export function EditLink({ post }: { post: PostType }) {
     <a
       className="pointer-events-auto hover:underline"
       href={`/editor/${post.slug}`}
+      style={{ marginLeft: "1ch" }}
     >
-      edit
+      Edit
     </a>
   ) : null;
 }
@@ -53,7 +55,7 @@ export function AddPostLink() {
 
   return adminPassword ? (
     <a className="pointer-events-auto hover:underline" href={`/creator`}>
-      add
+      Add
     </a>
   ) : null;
 }
@@ -62,7 +64,7 @@ export function LogoutLink() {
   const [adminPassword] = useAtom(adminPasswordAtom);
   return adminPassword ? (
     <a className="pointer-events-auto hover:underline" href={`/logout`}>
-      logout
+      Logout
     </a>
   ) : null;
 }

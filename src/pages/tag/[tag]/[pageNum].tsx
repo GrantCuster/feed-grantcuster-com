@@ -35,11 +35,11 @@ async function TagPage({
   const totalPages = Math.ceil(tagPostCount / limit);
 
   return (
-    <div className={`mx-auto max-w-[600px]`} style={{}}>
+    <div className="container">
       <Header />
-      <div className="px-[1lh] sm:px-0 flex gap-3">
-        <div className="orange">{tag}</div>
-        <div className="mb-4 gray">{tagPostCount} posts</div>
+      <div className="tag-header">
+        <span>{tag}</span>
+        <span>{tagPostCount} posts</span>
       </div>
       {totalPages > 1 && (
         <PostPagination
@@ -49,9 +49,9 @@ async function TagPage({
           postsOnPage={posts.length}
         />
       )}
-      <div className="flex flex-col gap-[2px]">
+      <div className="feed">
         {posts.map((post) => (
-          <TruncatedPostLink post={post} />
+          <TruncatedPostLink key={post.slug} post={post} />
         ))}
       </div>
       {totalPages > 1 && (

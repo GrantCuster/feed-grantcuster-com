@@ -85,64 +85,50 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:image" content={imageUrl} />
       </>
-      <div className="flex flex-col max-w-[600px] mx-auto">
+      <div className="container">
         <Header postCount={totalPostCount} />
-        <div
-          className="bg-hard-black relative text-left post px-[1lh] py-[1lh]"
-          key={post.id}
-          id={post.slug}
-        >
-          <div className="relative pointer-events-none">
-            <div className="w-full flex justify-between">
-              <div className="blue departure-mono">
-                {post.created_at && dateToReadableString(post.created_at)}
-              </div>
-              <div className="flex gap-3">
-                <PostDeleter deletePost={deletePost} post={post} />
-                <EditLink post={post} />
-              </div>
-            </div>
-            <div className="orange departure-mono">
-              {post.tags.map((tag) => (
-                <a
-                  href={`/tag/${tag}`}
-                  className="pointer-events-auto hover:underline"
-                  key={tag}
-                >
-                  {tag}
-                </a>
-              ))}
-            </div>
-            <div className="green mb-[1lh]">{post.title}</div>
-            <MarkdownWithImagePreview post={post} content={post.content} />
-            <AdminWrapper>
-              <div className="">
-                <div className="flex flex-wrap gap-3">
-                  <div className="gray">Mastodon</div>
-                  <ShareToMastodon post={post} />
-                  <ShareImageOrGifToMastodon
-                    post={post}
-                    imageUrl={imageUrlIncludesGIF!}
-                  />
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <div className="gray">Bluesky</div>
-                  <ShareToBluesky
-                    post={post}
-                    title={title.trim()}
-                    description={description.trim()}
-                    imageUrl={imageUrl}
-                  />
-                  <ShareImageToBluesky post={post} imageUrl={imageUrl!} />
-                  <ShareGifToBluesky
-                    post={post}
-                    imageUrl={imageUrlIncludesGIF!}
-                  />
-                </div>
-                <ShareToTwitter post={post} />
-              </div>
-            </AdminWrapper>
+        <div className="post-card markdown-body post" id={post.slug}>
+          <div>
+            <span>{post.created_at && dateToReadableString(post.created_at)}</span>
+            <EditLink post={post} />
+            <PostDeleter deletePost={deletePost} post={post} />
           </div>
+          <div>
+            {post.tags.map((tag) => (
+              <a href={`/tag/${tag}`} key={tag}>
+                {tag}
+              </a>
+            ))}
+          </div>
+          {post.title ? <h2>{post.title}</h2> : <br />}
+          <MarkdownWithImagePreview post={post} content={post.content} />
+          <AdminWrapper>
+            <div className="post-share">
+              <div className="post-share-row">
+                <span>Mastodon</span>
+                <ShareToMastodon post={post} />
+                <ShareImageOrGifToMastodon
+                  post={post}
+                  imageUrl={imageUrlIncludesGIF!}
+                />
+              </div>
+              <div className="post-share-row">
+                <span>Bluesky</span>
+                <ShareToBluesky
+                  post={post}
+                  title={title.trim()}
+                  description={description.trim()}
+                  imageUrl={imageUrl}
+                />
+                <ShareImageToBluesky post={post} imageUrl={imageUrl!} />
+                <ShareGifToBluesky
+                  post={post}
+                  imageUrl={imageUrlIncludesGIF!}
+                />
+              </div>
+              <ShareToTwitter post={post} />
+            </div>
+          </AdminWrapper>
         </div>
       </div>
     </>
