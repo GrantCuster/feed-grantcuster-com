@@ -9,6 +9,7 @@
     "start": "waku start --port 8082"
   },
   "dependencies": {
+    "@google/genai": "^1.52.0",
     "jotai": "^2.12.2",
     "postgres": "^3.4.5",
     "react": "19.0.0",

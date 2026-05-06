@@ -1,5 +1,5 @@
 import { Link } from "waku";
-import { AddPostLink, LogoutLink } from "./AdminComponents";
+import { AddPostLink, EmbeddingSyncButton, LogoutLink } from "./AdminComponents";
 
 export const Header = ({ postCount }: { postCount?: number }) => {
   return (
@@ -7,6 +7,7 @@ export const Header = ({ postCount }: { postCount?: number }) => {
       <Link to="/">Feed</Link>
       <nav>
         <AddPostLink />
+        <EmbeddingSyncButton />
         <LogoutLink />
         {false && postCount && <span>{postCount} posts</span>}
         <a href="/random">Random</a>

@@ -39,10 +39,36 @@ body {
 .feed-header nav {
   display: flex;
   gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .feed-header a:hover {
   text-decoration: underline;
+}
+
+.embedding-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.embedding-sync button {
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+}
+
+.embedding-sync button:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.embedding-sync-message {
+  font-size: 0.85rem;
+  color: var(--fgColor-muted);
 }
 
 .container {
@@ -55,6 +81,89 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.feed-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.feed-search-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.feed-search-form input {
+  flex: 1 1 16rem;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+  color: var(--fgColor-default);
+}
+
+.feed-search-form button {
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  cursor: pointer;
+}
+
+.feed-search-form button:hover {
+  text-decoration: underline;
+}
+
+.feed-search-meta,
+.feed-search-error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--fgColor-muted);
+}
+
+.feed-search-meta {
+  margin-top: 0.35rem;
+}
+
+.feed-search-meta a:hover {
+  text-decoration: underline;
+}
+
+.feed-search-clear {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--borderColor-default);
+  border-radius: 999px;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+.feed-search-error {
+  color: var(--fgColor-attention);
+}
+
+.feed-search-load-more {
+  margin-top: 1.5rem;
+}
+
+.feed-search-load-more button {
+  width: 100%;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  cursor: pointer;
+}
+
+.feed-search-load-more button:hover {
+  text-decoration: underline;
 }
 
 .post-card {
@@ -92,6 +201,22 @@ video {
   text-decoration: underline;
 }
 
+.post a,
+.tag-header a,
+.pagination a {
+  color: var(--fgColor-default);
+  text-decoration: underline;
+  text-decoration-thickness: 1.25px;
+  text-underline-offset: 0.18rem;
+  text-decoration-color: var(--fgColor-muted);
+}
+
+.post a:hover,
+.tag-header a:hover,
+.pagination a:hover {
+  text-decoration-color: var(--fgColor-default);
+}
+
 .post-share {
   margin-top: 1rem;
   display: flex;
@@ -106,6 +231,11 @@ video {
 
 @media (max-width: 600px) {
   .feed {
+    margin-left: -1rem;
+    margin-right: -1rem;
+  }
+
+  .container > .post-card {
     margin-left: -1rem;
     margin-right: -1rem;
   }

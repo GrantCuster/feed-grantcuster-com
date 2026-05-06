@@ -7,8 +7,12 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
   const sections = post.content.split("\n");
   return (
     <div className="post-card markdown-body post" id={post.slug} style={{ position: "relative" }}>
-      <a href={`/post/${post.slug}`} style={{ position: "absolute", inset: 0 }} />
-      <div style={{ position: "relative", pointerEvents: "none" }}>
+      <a
+        href={`/post/${post.slug}`}
+        aria-label={post.title ?? `Open post from ${dateToReadableString(post.created_at)}`}
+        style={{ position: "absolute", inset: 0, zIndex: 1 }}
+      />
+      <div style={{ position: "relative", zIndex: 2, pointerEvents: "none" }}>
         <div>
           <span>{post.created_at && dateToReadableString(post.created_at)}</span>
           <EditLink post={post} />
@@ -25,7 +29,13 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
           post={post}
           content={sections.slice(0, 5).join("\n")}
         />
-        {sections.length > 5 && <em>Read more</em>}
+        {sections.length > 5 && (
+          <em>
+            <a href={`/post/${post.slug}`} style={{ pointerEvents: "auto", position: "relative", zIndex: 3 }}>
+              Read more
+            </a>
+          </em>
+        )}
       </div>
     </div>
   );

@@ -4,8 +4,9 @@ import { useAtom } from "jotai";
 import { PostType } from "./types";
 import { adminPasswordAtom } from "./atoms";
 import { loadImage, makeSocialShare } from "./utils";
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { getGardenExtraBaseUrl } from "./consts";
+import { runEmbeddingSync } from "./embeddingSyncActions";
 
 export function PostDeleter({
   deletePost,
@@ -67,6 +68,54 @@ export function LogoutLink() {
       Logout
     </a>
   ) : null;
+}
+
+export function EmbeddingSyncButton() {
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [status, setStatus] = useState<
+    "idle" | "syncing" | "done" | "error"
+  >("idle");
+  const [message, setMessage] = useState<string | null>(null);
+
+  if (!adminPassword) {
+    return null;
+  }
+
+  return (
+    <span className="embedding-sync">
+      <button
+        className="pointer-events-auto hover:underline"
+        disabled={status === "syncing"}
+        onClick={() => {
+          setStatus("syncing");
+          setMessage(null);
+          startTransition(async () => {
+            try {
+              const response = await runEmbeddingSync(adminPassword);
+              if (response.status === "running") {
+                setStatus("idle");
+                setMessage("sync already running");
+                return;
+              }
+
+              const result = response.result;
+              setStatus("done");
+              setMessage(
+                `synced ${result.postsSynced}/${result.postsPending} posts and ${result.mediaSynced}/${result.mediaPending} media`,
+              );
+            } catch (error) {
+              console.error(error);
+              setStatus("error");
+              setMessage("sync failed");
+            }
+          });
+        }}
+      >
+        {status === "syncing" ? "Syncing..." : "Sync embeddings"}
+      </button>
+      {message ? <span className="embedding-sync-message">{message}</span> : null}
+    </span>
+  );
 }
 
 export function ShareToMastodon({ post }: { post: PostType }) {
