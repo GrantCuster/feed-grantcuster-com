@@ -5,8 +5,9 @@ import { SearchResults } from "../shared/SearchResults";
 import TruncatedPostLink from "../shared/TruncatedPostLink";
 import { PostPagination } from "../shared/PostPagination";
 import { Header } from "../shared/header";
-import { searchPostsPage, SearchPostPayload } from "../shared/search";
-import { PostType } from "../shared/types";
+import { searchPostsPage } from "../shared/search";
+import type { SearchPostPayload } from "../shared/search";
+import type { PostType } from "../shared/types";
 
 export default async function IndexPage({ query = "" }: PageProps<"/">) {
   const searchParams = new URLSearchParams(query);

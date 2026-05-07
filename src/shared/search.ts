@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai/node";
 import { getVectorSql, sql, toVectorLiteral } from "./db";
 import { PostType } from "./types";
 

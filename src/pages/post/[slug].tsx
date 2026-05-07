@@ -15,7 +15,7 @@ import {
   ShareToTwitter,
 } from "../../shared/AdminComponents";
 import { dateToReadableString } from "../../shared/dateFormatter";
-import { extractMarkdownMediaMatches, parseMediaUrls } from "../../shared/embeddingSync";
+import { extractMarkdownMediaMatches, parseMediaUrls } from "../../shared/mediaParsing";
 import { PostMediaEditor } from "../../shared/PostMediaEditor";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
