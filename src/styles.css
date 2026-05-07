@@ -1,20 +1,6 @@
 @import "tailwindcss";
 @import "./github-markdown.css";
 
-@font-face {
-  font-family: "DepartureMono";
-  src:
-    url("/fonts/DepartureMono-Regular.woff2") format("woff2"),
-    url("/fonts/DepartureMono-Regular.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
-.departure-mono {
-  font-family: "DepartureMono", monospace;
-  font-size: 15px;
-}
-
 html,
 body {
   background: #f6f8fa;

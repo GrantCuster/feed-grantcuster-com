@@ -6,7 +6,9 @@ import { getVectorSql, sql, toVectorLiteral } from "./db";
 import {
   extractMarkdownMediaMatches,
   getExt,
+  getMediaType,
   getMediaKind,
+  parseMediaUrls,
 } from "./mediaParsing";
 
 const embeddingModel = "gemini-embedding-2";
