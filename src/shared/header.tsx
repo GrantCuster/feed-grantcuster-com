@@ -1,5 +1,10 @@
 import { Link } from "waku";
-import { AddPostLink, EmbeddingSyncButton, LogoutLink } from "./AdminComponents";
+import {
+  AddPostLink,
+  EmbeddingSyncButton,
+  LogoutLink,
+  MediaDescriptionsLink,
+} from "./AdminComponents";
 
 export const Header = ({ postCount }: { postCount?: number }) => {
   return (
@@ -7,6 +12,7 @@ export const Header = ({ postCount }: { postCount?: number }) => {
       <Link to="/">Feed</Link>
       <nav>
         <AddPostLink />
+        <MediaDescriptionsLink />
         <EmbeddingSyncButton />
         <LogoutLink />
         {false && postCount && <span>{postCount} posts</span>}

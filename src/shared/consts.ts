@@ -2,6 +2,8 @@ export const containerWidth = 600;
 
 export const postsPerPage = 20;
 
+export const mediaBaseUrl = "https://grant-uploader.s3.us-east-2.amazonaws.com/";
+
 export function getGardenExtraBaseUrl() {
   if (window.location.hostname === "localhost") {
     return "http://localhost:3030/";

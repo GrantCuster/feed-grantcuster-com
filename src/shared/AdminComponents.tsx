@@ -61,6 +61,16 @@ export function AddPostLink() {
   ) : null;
 }
 
+export function MediaDescriptionsLink() {
+  const [adminPassword] = useAtom(adminPasswordAtom);
+
+  return adminPassword ? (
+    <a className="pointer-events-auto hover:underline" href={`/media-descriptions`}>
+      Media desc
+    </a>
+  ) : null;
+}
+
 export function LogoutLink() {
   const [adminPassword] = useAtom(adminPasswordAtom);
   return adminPassword ? (

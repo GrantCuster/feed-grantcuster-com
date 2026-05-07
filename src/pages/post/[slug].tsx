@@ -1,5 +1,5 @@
 import type { PageProps } from "waku/router";
-import { sql } from "../../shared/db";
+import { getVectorSql, sql } from "../../shared/db";
 import { PostType } from "../../shared/types";
 import { Header } from "../../shared/header";
 import { MarkdownWithImagePreview } from "../../shared/MarkdownImageWithPreview";
@@ -15,6 +15,8 @@ import {
   ShareToTwitter,
 } from "../../shared/AdminComponents";
 import { dateToReadableString } from "../../shared/dateFormatter";
+import { extractMarkdownMediaMatches, parseMediaUrls } from "../../shared/embeddingSync";
+import { PostMediaEditor } from "../../shared/PostMediaEditor";
 
 async function Post({ slug }: PageProps<"/post/[slug]">) {
   const postData: PostType[] = await sql`
@@ -33,6 +35,18 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
   const totalPostCount = postCountData[0]!.count;
 
   const post = postData[0]!;
+  const mediaUrls = parseMediaUrls(post.content);
+  const vectorSql = getVectorSql();
+  const mediaDescriptions = mediaUrls.length
+    ? await vectorSql<{ url: string; description: string }[]>`
+        SELECT url, description
+        FROM media_descriptions
+        WHERE url = ANY(${mediaUrls})
+      `
+    : [];
+  const mediaDescriptionMap = new Map(
+    mediaDescriptions.map((row) => [row.url, row.description]),
+  );
 
   const title =
     post.tags[0] +
@@ -46,9 +60,9 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
     .slice(0, 3)
     .map((line) => line.trim())
     .join(" ");
-  const firstImage = post.content.match(/!\[.*?\]\((.*?)\)/);
+  const firstImage = extractMarkdownMediaMatches(post.content)[0];
   let imageUrlIncludesGIF = firstImage
-    ? firstImage[1]
+    ? firstImage.url
     : "https://feed.grantcuster.com/images/og-image.png";
 
   let imageUrl = imageUrlIncludesGIF;
@@ -92,6 +106,15 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
             <span>{post.created_at && dateToReadableString(post.created_at)}</span>
             <EditLink post={post} />
             <PostDeleter deletePost={deletePost} post={post} />
+            <AdminWrapper>
+              <a
+                className="pointer-events-auto hover:underline"
+                href="#post-media-descriptions"
+                style={{ marginLeft: "1ch" }}
+              >
+                Media
+              </a>
+            </AdminWrapper>
           </div>
           <div>
             {post.tags.map((tag) => (
@@ -103,6 +126,13 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
           {post.title ? <h2>{post.title}</h2> : <br />}
           <MarkdownWithImagePreview post={post} content={post.content} />
           <AdminWrapper>
+            <PostMediaEditor
+              postId={post.id}
+              items={mediaUrls.map((url) => ({
+                url,
+                description: mediaDescriptionMap.get(url) ?? "",
+              }))}
+            />
             <div className="post-share">
               <div className="post-share-row">
                 <span>Mastodon</span>

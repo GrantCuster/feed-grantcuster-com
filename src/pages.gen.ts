@@ -16,6 +16,8 @@ import type { getConfig as Login_getConfig } from './pages/login';
 // prettier-ignore
 import type { getConfig as Logout_getConfig } from './pages/logout';
 // prettier-ignore
+import type { getConfig as MediaDescriptions_getConfig } from './pages/media-descriptions';
+// prettier-ignore
 import type { getConfig as PagePageNum_getConfig } from './pages/page/[pageNum]';
 // prettier-ignore
 import type { getConfig as TagTagPageNum_getConfig } from './pages/tag/[tag]/[pageNum]';
@@ -30,6 +32,7 @@ type Page =
 | ({ path: '/' } & GetConfigResponse<typeof Index_getConfig>)
 | ({ path: '/login' } & GetConfigResponse<typeof Login_getConfig>)
 | ({ path: '/logout' } & GetConfigResponse<typeof Logout_getConfig>)
+| ({ path: '/media-descriptions' } & GetConfigResponse<typeof MediaDescriptions_getConfig>)
 | { path: '/media'; render: 'dynamic' }
 | ({ path: '/page/[pageNum]' } & GetConfigResponse<typeof PagePageNum_getConfig>)
 | { path: '/post/[slug]'; render: 'dynamic' }

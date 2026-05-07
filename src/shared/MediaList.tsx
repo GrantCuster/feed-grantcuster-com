@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getGardenExtraBaseUrl } from "./consts";
+import { startTransition, useState } from "react";
+import { mediaBaseUrl } from "./consts";
 import { adminPasswordAtom } from "./atoms";
 import { useAtom } from "jotai";
 import { UploadType } from "./types";
-
-const link = "https://grant-uploader.s3.us-east-2.amazonaws.com/";
+import { updateMediaDescription } from "./mediaDescriptionActions";
 
 export function MediaList({ uploads }: { uploads: UploadType[] }) {
   const [adminPassword] = useAtom(adminPasswordAtom);
@@ -78,6 +77,10 @@ export function MediaList({ uploads }: { uploads: UploadType[] }) {
 
 export function Media({ item }: { item: UploadType }) {
   const [isCopying, setIsCopying] = useState(false);
+  const [adminPassword] = useAtom(adminPasswordAtom);
+  const [description, setDescription] = useState(item.description ?? "");
+  const [savedDescription, setSavedDescription] = useState(item.description ?? "");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
 
   // files imported by old script has bare file types instead of mimetypes, should fix sometime
   const imageTypes = [
@@ -91,26 +94,29 @@ export function Media({ item }: { item: UploadType }) {
   ];
   const videoTypes = ["video/mp4", "mp4"];
   const audioTypes = ["audio/mp3", "audio/wav", "mp3", "wav"];
+  const mediaUrl = `${mediaBaseUrl}${item.s3_key}`;
+  const hasChanges = description.trim() !== savedDescription.trim();
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-1">
         <div>{new Date(item.created_at).toLocaleString()}</div>
         {imageTypes.includes(item.file_type) && (
-          <img src={`${link}${item.s3_key}`} alt={item.s3_key} />
+          <img src={mediaUrl} alt={item.s3_key} />
         )}
         {videoTypes.includes(item.file_type) && (
           <video
             controls
-            src={`${link}${item.s3_key}`}
+            src={mediaUrl}
             className="w-full h-auto"
           />
         )}
         {audioTypes.includes(item.file_type) && (
-          <audio controls src={`${link}${item.s3_key}`} />
+          <audio controls src={mediaUrl} />
         )}
         <div className="flex justify-between">
           <a
-            href={`${link}${item.s3_key}`}
+            href={mediaUrl}
             target="_blank"
             rel="noopener noreferrer"
             className=""
@@ -125,7 +131,7 @@ export function Media({ item }: { item: UploadType }) {
               <button
                 onClick={() => {
                   // copy full address to clipboard
-                  navigator.clipboard.writeText(`${link}${item.s3_key}`);
+                  navigator.clipboard.writeText(mediaUrl);
                   setIsCopying(true);
                   setTimeout(() => {
                     setIsCopying(false);
@@ -137,6 +143,57 @@ export function Media({ item }: { item: UploadType }) {
               </button>
             )}
           </div>
+        </div>
+        <div className="editor-field">
+          <label className="editor-label" htmlFor={`media-description-${item.s3_key}`}>
+            Description
+          </label>
+          <textarea
+            id={`media-description-${item.s3_key}`}
+            className="editor-textarea min-h-24"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              setSaveState("idle");
+            }}
+            placeholder="Add a media description for search and admin reference"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-sm gray">
+            {saveState === "saving" && "Saving..."}
+            {saveState === "saved" && !hasChanges && "Saved"}
+            {saveState === "error" && "Save failed"}
+          </div>
+          <button
+            className="editor-save-btn self-end"
+            disabled={!adminPassword || !hasChanges || saveState === "saving"}
+            onClick={() => {
+              if (!adminPassword) {
+                alert("No password");
+                return;
+              }
+
+              setSaveState("saving");
+              startTransition(async () => {
+                try {
+                  const result = await updateMediaDescription(
+                    mediaUrl,
+                    description,
+                    adminPassword,
+                  );
+                  setSavedDescription(result.description);
+                  setDescription(result.description);
+                  setSaveState("saved");
+                } catch (error) {
+                  console.error("Failed to update media description", error);
+                  setSaveState("error");
+                }
+              });
+            }}
+          >
+            Save description
+          </button>
         </div>
       </div>
     </div>

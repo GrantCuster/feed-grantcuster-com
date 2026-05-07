@@ -33,7 +33,7 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.9rem;
 }
 
 .feed-header nav {
@@ -224,6 +224,91 @@ video {
   gap: 0.5rem;
 }
 
+.post-media-editor {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--borderColor-default);
+}
+
+.post-media-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-media-editor-meta,
+.post-media-editor-status,
+.post-media-editor-url,
+.post-media-editor-save-state {
+  font-size: 0.9rem;
+  color: var(--fgColor-muted);
+}
+
+.post-media-editor-meta,
+.post-media-editor-status {
+  margin-top: 0.4rem;
+}
+
+.post-media-editor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.media-description-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 56rem;
+  margin: 2rem auto 4rem;
+}
+
+.media-description-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.media-description-list-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.media-description-list-meta {
+  color: var(--fgColor-muted);
+  font-size: 0.9rem;
+}
+
+.media-description-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.post-media-editor-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borderColor-default);
+}
+
+.post-media-editor-item-header,
+.post-media-editor-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-media-editor-textarea {
+  min-height: 9rem;
+  height: auto;
+}
+
 .post-share-row {
   display: flex;
   gap: 1ch;
@@ -249,6 +334,22 @@ video {
 
 .post-body a {
   pointer-events: auto;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+}
+
+.markdown-body ol {
+  list-style-type: decimal;
+}
+
+.markdown-body ul ul {
+  list-style-type: circle;
+}
+
+.markdown-body ul ul ul {
+  list-style-type: square;
 }
 
 .post img {

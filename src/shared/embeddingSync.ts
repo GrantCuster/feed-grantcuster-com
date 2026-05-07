@@ -74,10 +74,56 @@ function getExt(url: string): string {
   return url.split("?")[0].split(".").pop()?.toLowerCase() ?? "";
 }
 
-function parseMediaUrls(content: string): string[] {
+type MarkdownMediaMatch = {
+  full: string;
+  url: string;
+};
+
+export function extractMarkdownMediaMatches(content: string): MarkdownMediaMatch[] {
+  const matches: MarkdownMediaMatch[] = [];
+  let searchFrom = 0;
+
+  while (searchFrom < content.length) {
+    const imageStart = content.indexOf("![", searchFrom);
+    if (imageStart === -1) break;
+
+    const urlStart = content.indexOf("](", imageStart);
+    if (urlStart === -1) break;
+
+    let cursor = urlStart + 2;
+    let parenDepth = 0;
+
+    while (cursor < content.length) {
+      const char = content[cursor];
+      if (char === "(") {
+        parenDepth += 1;
+      } else if (char === ")") {
+        if (parenDepth === 0) break;
+        parenDepth -= 1;
+      }
+      cursor += 1;
+    }
+
+    if (cursor >= content.length) break;
+
+    const url = content.slice(urlStart + 2, cursor);
+    if (/^https?:\/\//.test(url)) {
+      matches.push({
+        full: content.slice(imageStart, cursor + 1),
+        url,
+      });
+    }
+
+    searchFrom = cursor + 1;
+  }
+
+  return matches;
+}
+
+export function parseMediaUrls(content: string): string[] {
   const urls: string[] = [];
-  for (const match of content.matchAll(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/g)) {
-    urls.push(match[1]!);
+  for (const match of extractMarkdownMediaMatches(content)) {
+    urls.push(match.url);
   }
   for (const match of content.matchAll(/src=["'](https?:\/\/[^\s"']+)["']/g)) {
     urls.push(match[1]!);
@@ -88,11 +134,11 @@ function parseMediaUrls(content: string): string[] {
 function buildEnrichedContent(post: Pick<SyncPost, "title" | "content">, descMap: Map<string, string>) {
   let content = post.title ? `${post.title}\n\n${post.content}` : post.content;
 
-  content = content.replace(/!\[.*?\]\((https?:\/\/[^\s)]+)\)/g, (_, url) => {
-    const description = descMap.get(url);
-    if (!description) return "";
-    return `[${getMediaKind(url)}: ${description}]`;
-  });
+  for (const match of extractMarkdownMediaMatches(content)) {
+    const description = descMap.get(match.url);
+    const replacement = description ? `[${getMediaKind(match.url)}: ${description}]` : "";
+    content = content.replace(match.full, replacement);
+  }
 
   content = content.replace(
     /<video[^>]*src=["'](https?:\/\/[^\s"']+)["'][^>]*>.*?<\/video>/gs,
@@ -200,6 +246,51 @@ async function embedText(ai: GoogleGenAI, text: string) {
     throw new Error("Embedding response did not include vector values");
   }
   return values;
+}
+
+export async function reembedPostById(postId: number) {
+  const ai = getAiClient();
+  if (!ai) {
+    throw new Error("GEMINI_API_KEY is required for embedding sync");
+  }
+
+  const vectorSql = getVectorSql();
+  const posts = await sql<SyncPost[]>`
+    SELECT id, title, content, updated_at
+    FROM posts
+    WHERE id = ${postId}
+    LIMIT 1
+  `;
+  const post = posts[0];
+
+  if (!post) {
+    throw new Error(`Post ${postId} not found`);
+  }
+
+  const mediaUrls = parseMediaUrls(post.content);
+  const cachedMedia = mediaUrls.length
+    ? await vectorSql<MediaDescription[]>`
+        SELECT url, description
+        FROM media_descriptions
+        WHERE url = ANY(${mediaUrls})
+      `
+    : [];
+  const cachedMediaMap = new Map(cachedMedia.map((row) => [row.url, row.description]));
+  const enrichedContent = buildEnrichedContent(post, cachedMediaMap);
+  const embedding = await embedText(ai, enrichedContent);
+
+  await vectorSql`
+    INSERT INTO post_embeddings (post_id, embedding, embedded_at)
+    VALUES (${post.id}, ${toVectorLiteral(embedding)}::vector, NOW())
+    ON CONFLICT (post_id) DO UPDATE SET
+      embedding = EXCLUDED.embedding,
+      embedded_at = EXCLUDED.embedded_at
+  `;
+
+  return {
+    postId: post.id,
+    mediaCount: mediaUrls.length,
+  };
 }
 
 export async function syncEmbeddings() {
