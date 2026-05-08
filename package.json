@@ -4,9 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "waku dev",
+    "dev": "waku dev --port 3791",
     "build": "waku build",
-    "start": "waku start --port 8082"
+    "start": "waku start --port 8082",
+    "deploy": "bash deploy.sh"
   },
   "dependencies": {
     "@google/genai": "^1.52.0",
