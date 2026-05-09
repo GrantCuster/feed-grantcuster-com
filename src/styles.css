@@ -301,6 +301,10 @@ video {
 }
 
 @media (max-width: 600px) {
+  .container {
+    padding-top: 0.75rem;
+  }
+
   .feed {
     margin-left: -1rem;
     margin-right: -1rem;
