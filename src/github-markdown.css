@@ -15,15 +15,15 @@
   :root, .markdown-body, [data-theme="dark"] {
     /*dark */
     color-scheme: dark;
-    --fgColor-accent: #4493f8;
+    --fgColor-accent: #cccccc;
     --bgColor-attention-muted: #bb800926;
-    --bgColor-default: #0d1117;
-    --bgColor-muted: #151b23;
-    --bgColor-neutral-muted: #656c7633;
-    --borderColor-accent-emphasis: #1f6feb;
+    --bgColor-default: #111111;
+    --bgColor-muted: #1c1c1c;
+    --bgColor-neutral-muted: #66666633;
+    --borderColor-accent-emphasis: #707070;
     --borderColor-attention-emphasis: #9e6a03;
     --borderColor-danger-emphasis: #da3633;
-    --borderColor-default: #3d444d;
+    --borderColor-default: #404040;
     --borderColor-done-emphasis: #8957e5;
     --borderColor-success-emphasis: #238636;
     --color-prettylights-syntax-brackethighlighter-angle: #9198a1;
@@ -41,7 +41,7 @@
     --color-prettylights-syntax-markup-changed-text: #ffdfb6;
     --color-prettylights-syntax-markup-deleted-bg: #67060c;
     --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
-    --color-prettylights-syntax-markup-heading: #1f6feb;
+    --color-prettylights-syntax-markup-heading: #aaaaaa;
     --color-prettylights-syntax-markup-ignored-bg: #1158c7;
     --color-prettylights-syntax-markup-ignored-text: #f0f6fc;
     --color-prettylights-syntax-markup-inserted-bg: #033a16;
@@ -56,11 +56,11 @@
     --color-prettylights-syntax-variable: #ffa657;
     --fgColor-attention: #d29922;
     --fgColor-danger: #f85149;
-    --fgColor-default: #f0f6fc;
+    --fgColor-default: #f0f0f0;
     --fgColor-done: #ab7df8;
-    --fgColor-muted: #9198a1;
+    --fgColor-muted: #888888;
     --fgColor-success: #3fb950;
-    --borderColor-muted: #3d444db3;
+    --borderColor-muted: #404040b3;
     --color-prettylights-syntax-invalid-illegal-bg: var(--bgColor-danger-muted);
     --color-prettylights-syntax-invalid-illegal-text: var(--fgColor-danger);
     --focus-outlineColor: var(--borderColor-accent-emphasis);

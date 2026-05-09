@@ -10,7 +10,7 @@ body {
 @media (prefers-color-scheme: dark) {
   html,
   body {
-    background: #010409;
+    background: #111111;
   }
 }
 
@@ -155,6 +155,11 @@ body {
 .post-card {
   padding: 1rem;
   border: 1px solid var(--borderColor-default);
+}
+
+.post-meta {
+  color: var(--fgColor-muted);
+  font-size: 0.9rem;
 }
 
 img + em,

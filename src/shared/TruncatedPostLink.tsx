@@ -13,11 +13,11 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
         style={{ position: "absolute", inset: 0, zIndex: 1 }}
       />
       <div style={{ position: "relative", zIndex: 2, pointerEvents: "none" }}>
-        <div>
+        <div className="post-meta">
           <span>{post.created_at && dateToReadableString(post.created_at)}</span>
           <EditLink post={post} />
         </div>
-        <div>
+        <div className="post-meta">
           {post.tags.map((tag) => (
             <a href={`/tag/${tag}`} key={tag} style={{ pointerEvents: "auto" }}>
               {tag}
