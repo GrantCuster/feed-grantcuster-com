@@ -60,7 +60,7 @@ body {
 .container {
   max-width: 72ch;
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: 0.75rem 1rem;
 }
 
 .feed {
@@ -306,11 +306,7 @@ video {
 }
 
 @media (max-width: 600px) {
-  .container {
-    padding-top: 0.75rem;
-  }
-
-  .feed {
+.feed {
     margin-left: -1rem;
     margin-right: -1rem;
     gap: 0;
