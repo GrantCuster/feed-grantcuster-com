@@ -1,17 +1,78 @@
 @import "tailwindcss";
 @import "./github-markdown.css";
 
+:root {
+  --accent-red: #cc241d;
+  --accent-green: #98971a;
+  --accent-yellow: #d79921;
+  --accent-blue: #458588;
+  --accent-purple: #b16286;
+  --accent-aqua: #689d6a;
+  --accent-orange: #d65d0e;
+
+  --bg-hard: #fbf1c7;
+  --bg-medium: #f9f5d7;
+  --bg-soft: #f2ebc7;
+  --bg-muted: #ebdbb2;
+  --fg-default: #3c3836;
+  --fg-muted: #7c6f64;
+  --border-default: #d5c4a1;
+
+  --bgColor-default: var(--bg-medium);
+  --bgColor-muted: var(--bg-soft);
+  --bgColor-neutral-muted: var(--bg-muted);
+
+  --fgColor-default: var(--fg-default);
+  --fgColor-muted: var(--fg-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-red: #fb4934;
+    --accent-green: #b8bb26;
+    --accent-yellow: #fabd2f;
+    --accent-blue: #83a598;
+    --accent-purple: #d3869b;
+    --accent-aqua: #8ec07c;
+    --accent-orange: #fe8019;
+
+    --bg-hard: #1d2021;
+    --bg-medium: #282828;
+    --bg-soft: #32302f;
+    --bg-muted: #3c3836;
+    --fg-default: #ebdbb2;
+    --fg-muted: #a89984;
+    --border-default: #504945;
+
+    --bgColor-default: var(--bg-medium);
+    --bgColor-muted: var(--bg-soft);
+    --bgColor-neutral-muted: var(--bg-muted);
+
+    --fgColor-default: var(--fg-default);
+    --fgColor-muted: var(--fg-muted);
+  }
+}
+
 html,
 body {
-  background: #f6f8fa;
+  background: var(--bg-hard);
   margin: 0;
 }
 
 @media (prefers-color-scheme: dark) {
   html,
   body {
-    background: #111111;
+    background: var(--bg-hard);
   }
+}
+
+.markdown-body {
+  --bgColor-default: var(--bgColor-default);
+  --bgColor-muted: var(--bgColor-muted);
+  --fgColor-default: var(--fgColor-default);
+  --fgColor-muted: var(--fgColor-muted);
+  --borderColor-default: var(--border-default);
+  --borderColor-muted: var(--border-default);
 }
 
 .feed-header {
@@ -527,4 +588,15 @@ video {
 }
 .text-2xs {
   font-size: 0.55rem;
+}
+
+.post .tag-link,
+.post-card .tag-link {
+  color: var(--accent-orange);
+  text-decoration: none;
+}
+
+.post .tag-link:hover,
+.post-card .tag-link:hover {
+  text-decoration: underline;
 }

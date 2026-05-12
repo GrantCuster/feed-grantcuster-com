@@ -38,7 +38,7 @@ async function TagPage({
     <div className="container">
       <Header />
       <div className="tag-header">
-        <span>{tag}</span>
+        <span style={{ color: "var(--accent-orange)" }}>{tag}</span>
         <span>{tagPostCount} posts</span>
       </div>
       {totalPages > 1 && (

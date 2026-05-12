@@ -103,7 +103,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <Header postCount={totalPostCount} />
         <div className="post-card markdown-body post" id={post.slug}>
           <div>
-            <span>{post.created_at && dateToReadableString(post.created_at)}</span>
+            <span style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
             <EditLink post={post} />
             <PostDeleter deletePost={deletePost} post={post} />
             <AdminWrapper>
@@ -118,7 +118,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
           </div>
           <div>
             {post.tags.map((tag) => (
-              <a href={`/tag/${tag}`} key={tag}>
+              <a href={`/tag/${tag}`} key={tag} className="tag-link">
                 {tag}
               </a>
             ))}
