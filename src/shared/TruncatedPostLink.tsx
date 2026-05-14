@@ -31,7 +31,7 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
         />
         {sections.length > 5 && (
           <em>
-            <a href={`/post/${post.slug}`} style={{ pointerEvents: "auto", position: "relative", zIndex: 3 }}>
+            <a href={`/post/${post.slug}`} style={{ pointerEvents: "auto", position: "relative", zIndex: 3, color: "var(--accent-yellow)" }}>
               Read more
             </a>
           </em>
