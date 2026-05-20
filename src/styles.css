@@ -56,6 +56,7 @@
 html,
 body {
   background: var(--bg-hard);
+  color: var(--fg-default);
   margin: 0;
 }
 
@@ -67,10 +68,11 @@ body {
 }
 
 .markdown-body {
-  --bgColor-default: var(--bgColor-default);
-  --bgColor-muted: var(--bgColor-muted);
-  --fgColor-default: var(--fgColor-default);
-  --fgColor-muted: var(--fgColor-muted);
+  --bgColor-default: var(--bg-hard);
+  --bgColor-muted: var(--bg-soft);
+  --bgColor-neutral-muted: var(--bg-muted);
+  --fgColor-default: var(--fg-default);
+  --fgColor-muted: var(--fg-muted);
   --borderColor-default: var(--border-default);
   --borderColor-muted: var(--border-default);
 }
