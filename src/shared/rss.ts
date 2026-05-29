@@ -73,6 +73,14 @@ function stackMedia(html: string) {
     );
 }
 
+function addVideoFallbackLinks(html: string) {
+  return html.replaceAll(
+    /(<video\b[^>]*\bsrc="([^"]+)"[^>]*>[\s\S]*?<\/video>)/g,
+    (_match, video: string, src: string) =>
+      `${video}<p><a href="${escapeXml(src)}">View video</a></p>`,
+  );
+}
+
 function renderPostContent(post: PostType, link: string) {
   const html = micromark(post.content, {
     allowDangerousHtml: true,
@@ -80,7 +88,9 @@ function renderPostContent(post: PostType, link: string) {
     htmlExtensions: [gfmHtml()],
   });
 
-  const content = stackMedia(normalizeVideoFigures(addImageCaptions(html)));
+  const content = addVideoFallbackLinks(
+    stackMedia(normalizeVideoFigures(addImageCaptions(html))),
+  );
 
   return `${content}
 <p><a href="${escapeXml(link)}">Read on site</a></p>`;
