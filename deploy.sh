@@ -8,6 +8,6 @@ echo "Pushing to remote..."
 git push
 
 echo "Deploying to $REMOTE..."
-ssh "$REMOTE" "bash -l -c 'cd $REMOTE_PATH && git pull && (timeout 120 npm run build; pm2 restart feed)'"
+ssh "$REMOTE" "bash -l -c 'cd $REMOTE_PATH && git pull && timeout 120 npm run build; build_status=\$?; if [ \$build_status -ne 0 ] && [ \$build_status -ne 124 ]; then exit \$build_status; fi; pm2 restart feed'"
 
 echo "Deploy complete."

@@ -17,6 +17,7 @@ export const Header = ({ postCount }: { postCount?: number }) => {
         <LogoutLink />
         {false && postCount && <span>{postCount} posts</span>}
         <a href="/random" style={{ color: "var(--accent-aqua)" }}>Random</a>
+        <a href="/rss.xml" style={{ color: "var(--accent-aqua)" }}>RSS</a>
         <a href="https://grantcuster.com" style={{ color: "var(--accent-aqua)" }}>About</a>
       </nav>
     </div>
