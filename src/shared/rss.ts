@@ -27,6 +27,9 @@ function postTitle(post: PostType) {
 
 function postDescription(post: PostType) {
   return post.content
+    .replaceAll(/!\[([^\]]*)]\([^)]*\)/g, "$1")
+    .replaceAll(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replaceAll(/<[^>]*>/g, " ")
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean)
@@ -34,12 +37,53 @@ function postDescription(post: PostType) {
     .join(" ");
 }
 
-function renderPostContent(post: PostType) {
-  return micromark(post.content, {
+function addImageCaptions(html: string) {
+  return html.replace(
+    /<p><img\s+src="([^"]*)"\s+alt="([^"]+)"\s*\/><\/p>/g,
+    (_match, src: string, alt: string) =>
+      `<figure style="display:block;margin:0 0 1rem 0;"><img src="${src}" alt="${alt}" style="display:block;max-width:100%;height:auto;" /><figcaption style="display:block;margin-top:0.35rem;">${alt}</figcaption></figure>`,
+  );
+}
+
+function normalizeVideoFigures(html: string) {
+  return html
+    .replaceAll(
+      /<p>\s*(<video\b[^>]*>[\s\S]*?<\/video>)\s*<em>\s*<\/em>\s*<\/p>/g,
+      '<figure style="display:block;margin:0 0 1rem 0;">$1</figure>',
+    )
+    .replaceAll(
+      /<p>\s*(<video\b[^>]*>[\s\S]*?<\/video>)\s*<em>([\s\S]*?)<\/em>\s*<\/p>/g,
+      '<figure style="display:block;margin:0 0 1rem 0;">$1<figcaption style="display:block;margin-top:0.35rem;">$2</figcaption></figure>',
+    )
+    .replaceAll(
+      /<p>\s*(<video\b[^>]*>[\s\S]*?<\/video>)\s*<\/p>/g,
+      '<figure style="display:block;margin:0 0 1rem 0;">$1</figure>',
+    );
+}
+
+function stackMedia(html: string) {
+  return html
+    .replaceAll(
+      /<video\b(?![^>]*\bstyle=)([^>]*)>/g,
+      '<video style="display:block;width:auto;max-width:100%;height:auto;margin:0 0 1rem 0;"$1>',
+    )
+    .replaceAll(
+      /<img\b(?![^>]*\bstyle=)([^>]*)>/g,
+      '<img style="display:block;max-width:100%;height:auto;"$1>',
+    );
+}
+
+function renderPostContent(post: PostType, link: string) {
+  const html = micromark(post.content, {
     allowDangerousHtml: true,
     extensions: [gfm()],
     htmlExtensions: [gfmHtml()],
   });
+
+  const content = stackMedia(normalizeVideoFigures(addImageCaptions(html)));
+
+  return `${content}
+<p><a href="${escapeXml(link)}">Read on site</a></p>`;
 }
 
 export async function buildRssFeed() {
@@ -67,7 +111,7 @@ export async function buildRssFeed() {
       <guid isPermaLink="true">${escapeXml(link)}</guid>
       <pubDate>${post.created_at.toUTCString()}</pubDate>
       <description>${cdata(postDescription(post))}</description>
-      <content:encoded>${cdata(renderPostContent(post))}</content:encoded>
+      <content:encoded>${cdata(renderPostContent(post, link))}</content:encoded>
       ${post.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ")}
     </item>`;
     })
