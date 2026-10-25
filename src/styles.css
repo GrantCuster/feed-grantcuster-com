@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "./github-markdown.css";
 
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.feed-header,
+.post-date,
+.post-read-more {
+  font-family: "Departure Mono", monospace;
+  font-size: 14px;
+}
+
 :root {
   --accent-red: #cc241d;
   --accent-green: #98971a;
@@ -55,7 +70,7 @@
 
 html,
 body {
-  background: var(--bg-hard);
+  background: #ffffff;
   color: var(--fg-default);
   margin: 0;
 }
@@ -63,7 +78,7 @@ body {
 @media (prefers-color-scheme: dark) {
   html,
   body {
-    background: var(--bg-hard);
+    background: #000000;
   }
 }
 
@@ -121,7 +136,7 @@ body {
 }
 
 .container {
-  max-width: 72ch;
+  max-width: 68ch;
   margin: 0 auto;
   padding: 0.75rem 1rem;
 }
@@ -129,7 +144,7 @@ body {
 .feed {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2px;
 }
 
 .feed-search {
@@ -216,13 +231,23 @@ body {
 }
 
 .post-card {
-  padding: 1rem;
-  border: 1px solid var(--borderColor-default);
+  --bgColor-default: var(--bg-hard);
+  padding: 1rem 1.5rem 1.5rem;
+  background-color: var(--bgColor-default);
 }
 
 .post-meta {
   color: var(--fgColor-muted);
-  font-size: 0.9rem;
+  font-size: inherit;
+}
+
+.post-meta + h2,
+.post-meta + .post-body {
+  margin-top: 0.25rem;
+}
+
+.post-meta + .post-body > :first-child {
+  margin-top: 0;
 }
 
 img + em,
@@ -372,7 +397,6 @@ video {
 .feed {
     margin-left: -1rem;
     margin-right: -1rem;
-    gap: 0;
   }
 
   .container > .post-card {

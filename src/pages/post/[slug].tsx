@@ -102,8 +102,8 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
       <div className="container">
         <Header postCount={totalPostCount} />
         <div className="post-card markdown-body post" id={post.slug}>
-          <div>
-            <span style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
+          <div className="post-meta">
+            <span className="post-date" style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
             <EditLink post={post} />
             <PostDeleter deletePost={deletePost} post={post} />
             <AdminWrapper>
@@ -116,14 +116,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
               </a>
             </AdminWrapper>
           </div>
-          <div>
-            {post.tags.map((tag) => (
-              <a href={`/tag/${tag}`} key={tag} className="tag-link">
-                {tag}
-              </a>
-            ))}
-          </div>
-          {post.title ? <h2>{post.title}</h2> : <br />}
+          {post.title ? <h2>{post.title}</h2> : null}
           <MarkdownWithImagePreview post={post} content={post.content} />
           <AdminWrapper>
             <PostMediaEditor

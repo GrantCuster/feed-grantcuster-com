@@ -14,27 +14,18 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
       />
       <div style={{ position: "relative", zIndex: 2, pointerEvents: "none" }}>
         <div className="post-meta">
-          <span style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
+          <span className="post-date" style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
           <EditLink post={post} />
         </div>
-        <div className="post-meta">
-          {post.tags.map((tag) => (
-            <a href={`/tag/${tag}`} key={tag} className="tag-link">
-              {tag}
-            </a>
-          ))}
-        </div>
-        {post.title ? <h2>{post.title}</h2> : <br />}
+        {post.title ? <h2>{post.title}</h2> : null}
         <MarkdownWithImagePreview
           post={post}
           content={sections.slice(0, 5).join("\n")}
         />
         {sections.length > 5 && (
-          <em>
-            <a href={`/post/${post.slug}`} style={{ pointerEvents: "auto", position: "relative", zIndex: 3, color: "var(--accent-yellow)" }}>
-              Read more
-            </a>
-          </em>
+          <a className="post-read-more" href={`/post/${post.slug}`} style={{ pointerEvents: "auto", position: "relative", zIndex: 3, color: "var(--accent-yellow)", textDecoration: "none" }}>
+            Read more
+          </a>
         )}
       </div>
     </div>

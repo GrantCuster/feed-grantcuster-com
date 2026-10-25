@@ -194,7 +194,7 @@ export function PostEditor({
             <span>Preview</span>
           </div>
           <div className="post-card markdown-body post" id={post.slug}>
-            <div>
+            <div className="post-date">
               {slugTimestampToDate(createdAtEdit) ? dateToReadableString(slugTimestampToDate(createdAtEdit)!) : "Invalid Date"}
             </div>
             <div>

@@ -55,25 +55,14 @@ export default async function IndexPage({ query = "" }: PageProps<"/">) {
       <meta name="description" content="Making and inspiration in progress" />
       <div className="container">
         <Header />
-        <div className="feed-search">
-          <form action="/" method="get" className="feed-search-form">
-            <input
-              type="search"
-              name="q"
-              defaultValue={searchTerm}
-              placeholder="Semantic search"
-              aria-label="Search the feed"
-              autoComplete="off"
-            />
-            <button type="submit">Search</button>
-          </form>
-          {isSearching ? (
+        {isSearching ? (
+          <div className="feed-search">
             <p className="feed-search-meta">
               Results for "{searchTerm}" <a className="feed-search-clear" href="/">Clear</a>
             </p>
-          ) : null}
-          {searchError ? <p className="feed-search-error">{searchError}</p> : null}
-        </div>
+            {searchError ? <p className="feed-search-error">{searchError}</p> : null}
+          </div>
+        ) : null}
         {isSearching ? (
           <SearchResults
             initialPosts={initialSearchPosts}

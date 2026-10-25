@@ -70,13 +70,7 @@ export function dateToReadableString(date: Date) {
           ? "rd"
           : "th";
 
-  let hours = date.getHours(); // Adjust for timezone offset
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  const amOrPm = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12; // Convert to 12-hour format, with 12 as the starting hour
-
-  return `${dayOfWeek}, ${month} ${day}${suffix}, ${year} at ${hours}:${minutes} ${amOrPm}`;
+  return `${dayOfWeek}, ${month} ${day}${suffix}, ${year}`;
 }
 
 export function makeDBTimestamp(date: Date): string {
