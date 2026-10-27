@@ -1,22 +1,19 @@
 import type { PageProps } from "waku/router";
-import { sql } from "../shared/db";
 import { postsPerPage } from "../shared/consts";
 import { SearchResults } from "../shared/SearchResults";
-import TruncatedPostLink from "../shared/TruncatedPostLink";
-import { PostPagination } from "../shared/PostPagination";
+import InfiniteFeed from "../shared/InfiniteFeed";
+import { getFeedPage, type FeedPage } from "../shared/feedData";
 import { Header } from "../shared/header";
 import { searchPostsPage } from "../shared/search";
 import type { SearchPostPayload } from "../shared/search";
-import type { PostType } from "../shared/types";
 
 export default async function IndexPage({ query = "" }: PageProps<"/">) {
   const searchParams = new URLSearchParams(query);
   const searchTerm = searchParams.get("q")?.trim() ?? "";
   const isSearching = searchTerm.length > 0;
 
-  let posts: PostType[] = [];
+  let initialPage: FeedPage = { posts: [], nextCursor: null };
   let searchError: string | null = null;
-  let totalPostCount = 0;
   let initialSearchPosts: SearchPostPayload[] = [];
   let hasMoreSearchResults = false;
 
@@ -30,23 +27,7 @@ export default async function IndexPage({ query = "" }: PageProps<"/">) {
       searchError = "Search is unavailable right now.";
     }
   } else {
-    posts = await sql<PostType[]>`
-      SELECT p.id, p.title, p.content, p.created_at, p.slug,
-             COALESCE(json_agg(t.name) FILTER (WHERE t.id IS NOT NULL), '[]') AS tags
-      FROM posts p
-      LEFT JOIN post_tags pt ON p.id = pt.post_id
-      LEFT JOIN tags t ON pt.tag_id = t.id
-      GROUP BY p.id, p.title, p.content, p.created_at, p.slug
-      ORDER BY p.created_at DESC
-      LIMIT ${postsPerPage}
-    `;
-
-    const postCountData = await sql<{ count: string }[]>`
-      SELECT COUNT(*) AS count
-      FROM posts
-    `;
-
-    totalPostCount = Number(postCountData[0]?.count ?? 0);
+    initialPage = await getFeedPage();
   }
 
   return (
@@ -70,20 +51,8 @@ export default async function IndexPage({ query = "" }: PageProps<"/">) {
             searchTerm={searchTerm}
           />
         ) : (
-          <div className="feed">
-            {posts.map((post) => (
-              <TruncatedPostLink key={post.slug} post={post} />
-            ))}
-          </div>
+          <InfiniteFeed initialPage={initialPage} />
         )}
-        {!isSearching ? (
-          <PostPagination
-            baseLink="/page/"
-            page={1}
-            totalPostCount={totalPostCount}
-            postsOnPage={posts.length}
-          />
-        ) : null}
       </div>
     </>
   );

@@ -1,75 +1,33 @@
 import type { PageProps } from "waku/router";
-import { sql } from "../../../shared/db";
-import { PostType } from "../../../shared/types";
-import { PostPagination } from "../../../shared/PostPagination";
-import TruncatedPostLink from "../../../shared/TruncatedPostLink";
+import InfiniteFeed from "../../../shared/InfiniteFeed";
+import { getFeedPage } from "../../../shared/feedData";
+import { postsPerPage } from "../../../shared/consts";
 import { Header } from "../../../shared/header";
+import { sql } from "../../../shared/db";
 
-async function TagPage({
-  tag,
-  pageNum = "1",
-}: PageProps<"/tag/[tag]/[pageNum]">) {
-  const limit = 20;
-  const page = parseInt(pageNum);
-  const offset = (page - 1) * limit;
-
-  const posts: PostType[] = await sql`
-    SELECT p.id, p.title, p.content, p.created_at, p.slug,
-           COALESCE(json_agg(t.name) FILTER (WHERE t.id IS NOT NULL), '[]') AS tags
-    FROM posts p
-    LEFT JOIN post_tags pt ON p.id = pt.post_id
-    LEFT JOIN tags t ON pt.tag_id = t.id
-    WHERE t.name = ${tag}
-    GROUP BY p.id, p.title, p.content, p.created_at, p.slug
-    ORDER BY p.created_at DESC
-    LIMIT ${limit} OFFSET ${offset}`;
-
-  const postCountData = await sql`
-    SELECT COUNT(*) AS count
-    FROM posts p
-    LEFT JOIN post_tags pt ON p.id = pt.post_id
-    LEFT JOIN tags t ON pt.tag_id = t.id
-    WHERE t.name = ${tag}`;
-
-  const tagPostCount = postCountData[0]!.count;
-  const totalPages = Math.ceil(tagPostCount / limit);
-
+export default async function TagPage({ tag, pageNum = "1" }: PageProps<"/tag/[tag]/[pageNum]">) {
+  const page = Math.max(1, Number.parseInt(pageNum, 10) || 1);
+  const [initialPage, counts] = await Promise.all([
+    getFeedPage({ tag, offset: (page - 1) * postsPerPage }),
+    sql<{ count: string }[]>`
+      SELECT COUNT(*) AS count FROM posts p
+      WHERE EXISTS (
+        SELECT 1 FROM post_tags pt JOIN tags t ON t.id = pt.tag_id
+        WHERE pt.post_id = p.id AND t.name = ${tag}
+      )
+    `,
+  ]);
+  const postCount = Number(counts[0]?.count ?? 0);
   return (
     <div className="container">
-      <Header />
+      <Header postCount={postCount} />
       <div className="tag-header">
         <span style={{ color: "var(--accent-orange)" }}>{tag}</span>
-        <span>{tagPostCount} posts</span>
+        <span>{postCount} posts</span>
       </div>
-      {totalPages > 1 && (
-        <PostPagination
-          baseLink={`/tag/${tag}/`}
-          page={page}
-          totalPostCount={tagPostCount}
-          postsOnPage={posts.length}
-        />
-      )}
-      <div className="feed">
-        {posts.map((post) => (
-          <TruncatedPostLink key={post.slug} post={post} />
-        ))}
-      </div>
-      {totalPages > 1 && (
-        <PostPagination
-          baseLink="/page/"
-          page={page}
-          totalPostCount={tagPostCount}
-          postsOnPage={posts.length}
-        />
-      )}
+      <InfiniteFeed key={`${tag}-${page}`} initialPage={initialPage} tag={tag} />
     </div>
   );
 }
 
-export default TagPage;
-
-export const getConfig = async () => {
-  return {
-    render: "dynamic",
-  } as const;
-};
+export const getConfig = async () => ({ render: "dynamic" } as const);

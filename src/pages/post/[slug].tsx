@@ -103,7 +103,7 @@ async function Post({ slug }: PageProps<"/post/[slug]">) {
         <Header postCount={totalPostCount} />
         <div className="post-card markdown-body post" id={post.slug}>
           <div className="post-meta">
-            <span className="post-date" style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
+            <span className="post-date">{post.created_at && dateToReadableString(post.created_at)}</span>
             <EditLink post={post} />
             <PostDeleter deletePost={deletePost} post={post} />
             <AdminWrapper>

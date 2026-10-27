@@ -3,7 +3,7 @@ import { dateToReadableString } from "./dateFormatter";
 import { MarkdownWithImagePreview } from "./MarkdownImageWithPreview";
 import { PostType } from "./types";
 
-export default function TruncatedPostLink({ post }: { post: PostType }) {
+export default function TruncatedPostLink({ post, hideDate = false }: { post: PostType; hideDate?: boolean }) {
   const sections = post.content.split("\n");
   return (
     <div className="post-card markdown-body post" id={post.slug} style={{ position: "relative" }}>
@@ -14,7 +14,7 @@ export default function TruncatedPostLink({ post }: { post: PostType }) {
       />
       <div style={{ position: "relative", zIndex: 2, pointerEvents: "none" }}>
         <div className="post-meta">
-          <span className="post-date" style={{ color: "var(--accent-aqua)" }}>{post.created_at && dateToReadableString(post.created_at)}</span>
+          {!hideDate && <span className="post-date">{post.created_at && dateToReadableString(post.created_at)}</span>}
           <EditLink post={post} />
         </div>
         {post.title ? <h2>{post.title}</h2> : null}

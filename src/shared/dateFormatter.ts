@@ -30,16 +30,7 @@ export function slugTimestampToDate(dateString: string): Date | null {
   return date;
 }
 
-export function dateToReadableString(date: Date) {
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+export function dateToReadableString(date: Date, dayOnly = false) {
   const months = [
     "January",
     "February",
@@ -55,22 +46,25 @@ export function dateToReadableString(date: Date) {
     "December",
   ];
 
-  const dayOfWeek = daysOfWeek[date.getDay()];
   const month = months[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();
 
-  // Determine the ordinal suffix
-  const suffix =
-    day % 10 === 1 && day !== 11
-      ? "st"
-      : day % 10 === 2 && day !== 12
-        ? "nd"
-        : day % 10 === 3 && day !== 13
-          ? "rd"
-          : "th";
+  return dayOnly
+    ? `${day}`
+    : `${month} ${day}, ${year}`;
+}
 
-  return `${dayOfWeek}, ${month} ${day}${suffix}, ${year}`;
+export function dateToPostTimestamp(date: Date): string {
+  const day = date.getDate();
+  const suffix = day % 100 >= 11 && day % 100 <= 13
+    ? "th"
+    : ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[day % 10] ?? "th";
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const hour = date.getHours();
+  const time = `${hour % 12 || 12}.${String(date.getMinutes()).padStart(2, "0")}${hour < 12 ? "am" : "pm"}`;
+
+  return `${month} ${day}${suffix}, ${date.getFullYear()} at ${time}`;
 }
 
 export function makeDBTimestamp(date: Date): string {
