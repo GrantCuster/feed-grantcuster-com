@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import { MarkdownImageWithCaptionRenderer } from "./markdownComponents";
 import Markdown from "react-markdown";
 import { PostType } from "./types";
+import { ViewportVideo } from "./ViewportVideo";
 
 export const MarkdownWithImagePreview = ({
   post,
@@ -42,6 +43,7 @@ export const MarkdownWithImagePreview = ({
         rehypePlugins={[rehypeRaw]}
         components={{
           img: MarkdownImageWithCaptionRenderer,
+          video: ViewportVideo,
         }}
       >
         {content}
